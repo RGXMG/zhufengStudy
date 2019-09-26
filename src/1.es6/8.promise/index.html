@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<!--<script src="promiseNotR.js"></script>-->
+<script src="promiseOfStep.js"></script>
+<!--<script src="promiseOfGithubUser.js"></script>-->
+<script>
+  const pro = new PromiseStep((res, rej) => {
+    setTimeout(() => {
+      res(new PromiseStep((res) => {
+        setTimeout(function() {
+          res(1000)
+        }, 2000);
+      }));
+    }, 2000);
+     // res(9);
+  });
+
+  // pro.then(res => {
+  //   console.log('第一个then的res', res, '我将要抛出一个错误');
+  //   throw new Error('');
+  //   }).catch(e => {
+  //     console.log('最终的catch处理', e.message);
+  // }).finally(() => {
+  //   console.log('finally');
+  // });
+
+  pro.then(res => {
+    console.log('第一个then的res', res, '我将要抛出一个错误');
+  })
+    .then((res) => {
+      const pro2 = new PromiseStep(res => {
+        setTimeout(function () {
+          res(11);
+        }, 2000);
+      });
+      pro2.then(res => { console.log(res); return 111111 }).then(function(res) { console.log(res); return '错误！！！！' });
+      return pro2;
+    }, (e) => {
+      console.log('第二个then的rej', e.message, '我将要返回一个值5555');
+     return 5555;
+    })
+    .then((res) => {
+      console.log('第三个then的res', res, '我将要抛出一个错误');
+      throw new Error('第三个then的ERROR');
+    })
+    .then(res => {
+      console.log('第四个then的res', res, '我什么都不干');
+       }, (e) => {
+      console.log('第四个then的rej, 错误是：', e.message, '我将要抛出一个错误');
+      throw new Error('第四个then的ERROR');
+    })
+    .then(res => {console.log(res)});
+</script>
+</body>
+</html>
