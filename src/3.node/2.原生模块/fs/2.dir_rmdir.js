@@ -15,35 +15,28 @@ const rmdirp = async function(path, callback = () => {}) {
       throw e;
     }
   };
-  const isEmpty = async path => {
-    try {
-      const child = await readdir(path);
-      return !child.length;
-    } catch (e) {
-      throw e;
-    }
-  };
   const concatEvery = (array, str) => array.map(i => `${str}${i}`);
-  const handle = async function(paths) {
+  const handle = async function(path) {
     try {
-      for (const p of paths) {
+      const childs = concatEvery(await readdir(path), `${path}/`);
+      for (const p of childs) {
         if (!await isDir(p)) {
           await unlink(p);
           continue;
         }
-        await handle(concatEvery(await readdir(p), `${p}/`));
-        if (await isEmpty(p)) {
-          await rmdir(p);
-        }
+        await handle(p);
       }
+      await rmdir(path);
     } catch (e) {
-      callback(e);
+      throw new Error(e);
     }
   };
-  const child = await readdir(path);
-  await handle(concatEvery(child, `${path}/`));
-  await rmdir(path);
-  callback(null);
+  try {
+    await handle(path);
+    callback(null);
+  } catch (e) {
+    callback(e);
+  }
 };
 rmdirp('a');
 // console.log(path.resolve('b'));

@@ -25,7 +25,7 @@ const write = (fd, buffer, offset, bufferCount, position = null) => {
   });
 };
 const BUFFER_CACHE_SIZE = 3;
-const 1 = async function(src, copy) {
+const copy = async function(src, copy) {
   try {
     const buffer = Buffer.alloc(3);
     const readFd = await open(src, 'r');
@@ -54,4 +54,4 @@ const 1 = async function(src, copy) {
     console.error(e);
   }
 };
-1('./1.txt', './2.txt');
+copy('./1.txt', './2.txt');
