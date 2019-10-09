@@ -1,5 +1,5 @@
 const fs = require('fs');
-const path = require('path');
+const nodePath = require('path');
 const promisify = require('util').promisify;
 const stat = promisify(fs.stat);
 const unlink = promisify(fs.unlink);
@@ -15,10 +15,9 @@ const rmdirp = async function(path, callback = () => {}) {
       throw e;
     }
   };
-  const concatEvery = (array, str) => array.map(i => `${str}${i}`);
   const handle = async function(path) {
     try {
-      const childs = concatEvery(await readdir(path), `${path}/`);
+      const childs = (await readdir(path)).map(i => nodePath.join(path, i));
       for (const p of childs) {
         if (!await isDir(p)) {
           await unlink(p);
@@ -38,5 +37,7 @@ const rmdirp = async function(path, callback = () => {}) {
     callback(e);
   }
 };
-rmdirp('a');
+rmdirp('a').then(res => {
+  console.log(res);
+});
 // console.log(path.resolve('b'));

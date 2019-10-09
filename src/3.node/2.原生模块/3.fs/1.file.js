@@ -23,13 +23,13 @@ const fs = require('fs');
  * r+ w+: 1. 当文件不存在时，r+不会创建文件，且会导致调用错误，w+会创建一个新文件
  *        2. 当文件存在时。r+不会清空文件，而w+会清空文件
  */
-fs.readFile('./1.txt', { encoding: 'utf8', flag: 'r+' }, function(err, res) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(res);
-  }
-});
+// fs.readFile('./1.txt', { encoding: 'utf8', flag: 'r+' }, function(err, res) {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(res);
+//   }
+// });
 
 /**
  * 写文件
@@ -40,16 +40,16 @@ fs.readFile('./1.txt', { encoding: 'utf8', flag: 'r+' }, function(err, res) {
  * -42-42-42
  * 用Linux命令更改2.txt权限为可读可写可执行：chmod 777 2.txt
  */
-fs.writeFile('./2.txt', 'test write content in file',
-  { encoding: 'utf8', flag: 'a', mode: 0o666 }, function(err, res) {
-  if (err) console.log(err);
-  else console.log(res);
-});
-fs.appendFile('./2.txt', 'test write content in file',
-  function(err, res) {
-    if (err) console.log(err);
-    else console.log(res);
-  });
+// fs.writeFile('./2.txt', 'test write content in file',
+//   { encoding: 'utf8', flag: 'a', mode: 0o666 }, function(err, res) {
+//   if (err) console.log(err);
+//   else console.log(res);
+// });
+// fs.appendFile('./2.txt', 'test write content in file',
+//   function(err, res) {
+//     if (err) console.log(err);
+//     else console.log(res);
+//   });
 /**
  * NOTE 上述操作都是将文件当成一个整体，readFile,appendFile,writeFile等
  * 直接读入到内存中去操作，在某些情况下存在一些问题：
@@ -61,19 +61,30 @@ fs.appendFile('./2.txt', 'test write content in file',
  *      1：标准输出(console.log -> process.stdout.write())
  *      2：错误输出(console.error -> process.stderr.write())
  */
-fs.open('./2.txt', 'w', 0o666, function(err, fd) {
-  if (err) {
-    console.error(err);
-    return;
-  }
+// fs.open('./2.txt', 'w', 0o666, function(err, fd) {
+//   if (err) {
+//     console.error(err);
+//     return;
+//   }
   // 通过write写入
-  // note 参数
-  // NOTE 描述器，写入的buffer, buffer的偏移量, 写入几个字节, 从哪个位置开始写入
-  fs.write(fd, Buffer.from('珠峰'), 3, 3 , 0, function(err, res) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(res);
-  });
+  // note 当调用write写入文件时，并不会直接写入到物理文件当中，而是先写入到缓存区，在批量写入物理文件
+  // NOTE 参数依次为：描述器，写入的buffer, buffer的偏移量, 写入几个字节, 从哪个位置开始写入,位置填写null时位置自动维护
+  // note callBack中的第二个参数为实际写入的字节数bytesWritten
+  // fs.write(fd, Buffer.from('珠峰'), 3, 3 , 0, function(err, res) {
+  //   if (err) {
+  //     console.error(err);
+  //     return;
+  //   }
+  //   console.log(res);
+  // });
+// });
+
+/**
+ * 截断文件
+ * fs.truncate(path, len, callback)
+ * 参数依次为： 路径，字节长度，回调函数
+ * NOTE 该方法会直接更改源文件
+ */
+fs.truncate('./1.txt', 5, function(err, res) {
+  console.log(res);
 });
