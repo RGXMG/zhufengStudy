@@ -85,6 +85,6 @@ const fs = require('fs');
  * 参数依次为： 路径，字节长度，回调函数
  * NOTE 该方法会直接更改源文件
  */
-fs.truncate('./1.txt', 5, function(err, res) {
-  console.log(res);
+fs.truncate('./1.txt', 7, function(err, res) {
+  console.log('---', res);
 });
