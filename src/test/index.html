@@ -12,14 +12,86 @@
             margin: 0;
             height: 100%;
         }
-        body {
-            background-image: url("./bg_hhy.png");
-            background-size: cover;
-            background-repeat: no-repeat;
+        .imgSrc {
+            width: 600px;
+        }
+        .imgSrc-active {
+           transform: translate(400px, 400px);
+            transition: transform 2s;
+            transform-origin: left top;
+        }
+        .imgCenterWrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            bottom: 0;
+            background: rgba(0,0,0,0.1);
+        }
+        .imgCenterFlex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .imgCenter {
+            transform-origin: top left;
+        }
+        .addAn {
+            animation: change 0.2s ease-in forwards;
         }
     </style>
 </head>
 <body>
-
+<div>
+    <img src="https://ss3.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/super/crop=182,54,1555,972/sign=e8e91b5da2af2eddc0be13a9b02139db/78310a55b319ebc429a513c28c26cffc1f17168f.jpg" onclick="imgActive(this)" id="imgSrc" class="imgSrc" alt="">
+    <div class="imgCenterWrap" style="display: none">
+        <div class="imgCenterFlex">
+            <img src="./mm.png" class="imgCenter" alt="">
+        </div>
+    </div>
+</div>
+<script>
+  function imgActive(e) {
+    // transform: scale(1) translate(0px, 0px);
+    // transition: all 0.3s ease 0s;
+    const src = e.src;
+    const imgCenterEle = document.getElementsByClassName('imgCenter')[0];
+    const relativeLeft = e.getBoundingClientRect().left;
+    const relativeTop = e.getBoundingClientRect().top;
+    const tfCssText = `
+     transform: scale(1) translate(0px, 0px);
+     transition: all 5s ease 0s;
+    `;
+    const centerDotWidth = document.documentElement.clientWidth / 2;
+    const centerDotHeight = document.documentElement.clientHeight / 2;
+    const diffWith = relativeLeft - centerDotWidth;
+    const diffHeight = relativeTop - centerDotHeight;
+    const sheetRule = `@keyframes change {
+            0% {
+                transform: scale(1) translate(${diffWith}px, ${diffHeight}px);
+                width: 400px;
+            }
+            100% {
+                max-width: calc(100% - 400px);
+                max-height: calc(100% - 100px);
+                transform: scale(1) translate(0px, 0px);
+                transition: all 5s ease 0s;
+            }
+        }`;
+    document.styleSheets[0].insertRule(sheetRule);
+    imgCenterEle.style.cssText = `
+        width: 600px;
+       transform: scale(1) translate(${diffWith}px, ${diffHeight}px);
+    `;
+   document.querySelector('.imgCenterWrap').style.display = 'block';
+    // imgCenterEle.className = imgCenterEle.className + ' addAn';
+   // setTimeout(() => {
+   //   const imgCenterEle = document.getElementsByClassName('imgCenter')[0];
+   //   imgCenterEle.className = imgCenterEle.className + ' addAn';
+   // }, 0)
+  }
+</script>
 </body>
 </html>

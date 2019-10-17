@@ -10,7 +10,7 @@ console.log(path.join('a', 'c/d'));
  * 字符串 a 代表当前目录 下面的a目录
  * /a 代表分区根目录下面的a目录 -> H:\a
  */
-console.log(path.resolve('/a'));
+console.log(path.resolve('/a', '../../../'));
 
 /**
  * delimiter 当前操作系统下变量分割符
