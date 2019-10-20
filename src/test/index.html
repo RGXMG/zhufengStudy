@@ -27,70 +27,94 @@
             right: 0;
             z-index: 999;
             bottom: 0;
-            background: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.8);
         }
         .imgCenterFlex {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100%;
+            overflow-y: auto;
         }
         .imgCenter {
             transform-origin: top left;
         }
         .addAn {
-            animation: change 0.2s ease-in forwards;
+            animation: change 0.3s ease forwards;
+            max-width: calc(100% - 300px);
+            background-size: contain;
         }
     </style>
 </head>
 <body>
 <div>
-    <img src="https://ss3.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/super/crop=182,54,1555,972/sign=e8e91b5da2af2eddc0be13a9b02139db/78310a55b319ebc429a513c28c26cffc1f17168f.jpg" onclick="imgActive(this)" id="imgSrc" class="imgSrc" alt="">
+    <div style="height: 300px;">
+        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571419495096&di=16b1b32bcf0ea6163cd45dca98291c61&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2F7ec1c00cede371296f80105361da622aa8829924.jpg" onclick="imgActive(this)" class="imgSrc" alt="">
+    </div>
+    <div style="height: 300px;">
+        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571419495096&di=16b1b32bcf0ea6163cd45dca98291c61&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2F7ec1c00cede371296f80105361da622aa8829924.jpg" onclick="imgActive(this)" class="imgSrc" alt="">
+    </div><div style="height: 300px;">
+    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571419495096&di=16b1b32bcf0ea6163cd45dca98291c61&imgtype=0&src=http%3A%2F%2Fi0.hdslb.com%2Fbfs%2Farticle%2F7ec1c00cede371296f80105361da622aa8829924.jpg" onclick="imgActive(this)" class="imgSrc" alt="">
+</div>
     <div class="imgCenterWrap" style="display: none">
         <div class="imgCenterFlex">
-            <img src="./mm.png" class="imgCenter" alt="">
+            <img onclick="close()" src="" class="imgCenter" alt="">
         </div>
     </div>
 </div>
 <script>
   function imgActive(e) {
-    // transform: scale(1) translate(0px, 0px);
-    // transition: all 0.3s ease 0s;
     const src = e.src;
     const imgCenterEle = document.getElementsByClassName('imgCenter')[0];
-    const relativeLeft = e.getBoundingClientRect().left;
-    const relativeTop = e.getBoundingClientRect().top;
-    const tfCssText = `
-     transform: scale(1) translate(0px, 0px);
-     transition: all 5s ease 0s;
+    const imgCenterWrap = document.querySelector('.imgCenterWrap');
+    const thumbBound =  e.getBoundingClientRect();
+    const thumbLeft = thumbBound.left;
+    const thumbTop = thumbBound.top;
+    const thumbWidth = thumbBound.width;
+    const thumbHeight = thumbBound.height;
+    console.log('thumbBound', thumbBound);
+
+    const thumbSize = `
+       width: ${thumbWidth}px;
+       height: ${thumbHeight}px;
     `;
-    const centerDotWidth = document.documentElement.clientWidth / 2;
-    const centerDotHeight = document.documentElement.clientHeight / 2;
-    const diffWith = relativeLeft - centerDotWidth;
-    const diffHeight = relativeTop - centerDotHeight;
+    imgCenterEle.src = src;
+    imgCenterWrap.style.cssText = `
+        display: block;
+        visibility: hidden;
+    `;
+    const fullWidth = imgCenterEle.getBoundingClientRect().width;
+    const fullHeight = imgCenterEle.getBoundingClientRect().height;
+
+    imgCenterEle.style.cssText = thumbSize;
+    const fullBound = imgCenterEle.getBoundingClientRect();
+    console.log('fullBound', fullBound);
+    const fullLeft = imgCenterEle.getBoundingClientRect().left;
+    const fullTop = imgCenterEle.getBoundingClientRect().top;
+    const diffLeft = -(fullLeft - thumbLeft);
+    const diffTop = -(fullTop - thumbTop);
+
+    console.log(diffLeft);
+    console.log(diffTop);
     const sheetRule = `@keyframes change {
-            0% {
-                transform: scale(1) translate(${diffWith}px, ${diffHeight}px);
-                width: 400px;
+            from {
+                 transform: translate(${diffLeft}px, ${diffTop}px);
             }
-            100% {
-                max-width: calc(100% - 400px);
-                max-height: calc(100% - 100px);
-                transform: scale(1) translate(0px, 0px);
-                transition: all 5s ease 0s;
+            to {
+                width: ${fullWidth}px;
+                height: ${fullHeight}px;
+                transform: translate(0px, 0px);
             }
         }`;
     document.styleSheets[0].insertRule(sheetRule);
-    imgCenterEle.style.cssText = `
-        width: 600px;
-       transform: scale(1) translate(${diffWith}px, ${diffHeight}px);
+    imgCenterWrap.style.cssText = ``;
+    imgCenterEle.className = imgCenterEle.className + ' addAn';
+  }
+  function close() {
+    const imgCenterWrap = document.querySelector('.imgCenterWrap');
+    imgCenterWrap.style.cssText = `
+        display: none
     `;
-   document.querySelector('.imgCenterWrap').style.display = 'block';
-    // imgCenterEle.className = imgCenterEle.className + ' addAn';
-   // setTimeout(() => {
-   //   const imgCenterEle = document.getElementsByClassName('imgCenter')[0];
-   //   imgCenterEle.className = imgCenterEle.className + ' addAn';
-   // }, 0)
   }
 </script>
 </body>
