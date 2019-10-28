@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<input type="text" id="input">
+<script>
+    const input = document.getElementById('input');
+    input.onkeydown = function(e) {
+      console.log('onkeydown', e);
+    };
+    input.onkeypress = function(e) {
+      console.log('onkeypress');
+    };
+    input.oninput = function(e) {
+      console.log('oninput', e);
+    };
+    input.addEventListener('change', function(e) {
+      console.log('onchange', e);
+    });
+    input.onkeyup = function(e) {
+      console.log('onkeyup');
+    };
+</script>
+</body>
+</html>
