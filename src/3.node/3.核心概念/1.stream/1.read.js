@@ -53,6 +53,7 @@ const rs = fs.createReadStream('1.read.txt', {
 
 /**
  * readabled事件
+ * NOTE 监听数据是否准备完成，完成即可调用read事件
  * NOTE pause模式
  * NOTE rs读取highWaterMark指定大小的数据进行缓存，
  * NOTE 当手动调用read方法时，返回数据，并更新缓存，再次异步以highWaterMark指定大小进行读取数据，添加到缓存中
