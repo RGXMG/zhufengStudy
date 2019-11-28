@@ -48,19 +48,19 @@ class WriteStream extends EventEmitter {
    * 内部方法
    * 执行fs的写入文件操作
    * @param chunk
-   * @param encoding
-   * @param cb
-   * @private
-   */
-  _write(chunk, encoding, cb) {
-    fs.write(this.fd, chunk, 0, chunk.length, this.pos, (err, bytesWritten) => {
-      if (err) {
-        return this._close(err);
-      }
-      this.pos += bytesWritten;
-      this.length -= bytesWritten;
-      cb && cb();
-    });
+  * @param encoding
+    * @param cb
+    * @private
+    */
+    _write(chunk, encoding, cb) {
+      fs.write(this.fd, chunk, 0, chunk.length, this.pos, (err, bytesWritten) => {
+        if (err) {
+          return this._close(err);
+        }
+        this.pos += bytesWritten;
+        this.length -= bytesWritten;
+        cb && cb();
+      });
   }
   _close(error) {
     this.destroy();
@@ -109,6 +109,7 @@ class WriteStream extends EventEmitter {
         });
       };
       if (typeof this.fd !== 'number') {
+        this.writing = true;
         this.once('open', execute);
       } else execute();
     }
