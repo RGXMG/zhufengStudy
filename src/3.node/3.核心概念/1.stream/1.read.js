@@ -59,11 +59,12 @@ const rs = fs.createReadStream('1.read.txt', {
  * NOTE 当手动调用read方法时，返回数据，并更新缓存，再次异步以highWaterMark指定大小进行读取数据，添加到缓存中
  */
 rs.on('readable', () => {
-    const data = rs.read(1);
+  console.log('触发readable');
+    const data = rs.read();
     console.log(data);
   //   // 缓存区大小
     console.log('length',rs._readableState.length);
-    const data2 = rs.read(1);
+    const data2 = rs.read();
   console.log(data2);
   console.log('length', rs._readableState.length);
 });
