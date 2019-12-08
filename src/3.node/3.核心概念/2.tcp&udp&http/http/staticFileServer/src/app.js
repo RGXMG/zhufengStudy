@@ -9,6 +9,8 @@ const util = require('util');
 const { promisify } = util;
 const mime = require('mime');
 const handlebars = require('handlebars');
+const zlib = require('zlib');
+const crypto = require('crypto');
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 
@@ -81,14 +83,100 @@ class Server {
       this.sendError(res);
     }
   }
-  sendFile(req, res, filepath, statePath) {
+  async sendFile(req, res, filepath, statePath) {
+    // 处理缓存
+    const result = await this.handleCache(req, res, filepath, statePath);
+    if (result) {
+      res.writeHead(304);
+      res.end();
+      return;
+    }
     // 设置header Content-Type
     res.setHeader('Content-Type', mime.getType(filepath));
-    fs.createReadStream(filepath).pipe(res);
+    const rs = fs.createReadStream(filepath);
+    // 处理文件压缩
+    const encoding = this.getEncoding(req, res);
+    if (encoding) {
+      rs.pipe(encoding).pipe(res);
+      // fs.createReadStream(filepath).pipe(zlib.createGzip()).pipe(res);
+    } else {
+      rs.pipe(res);
+    }
   };
   sendError(res) {
     res.statusCode = 500;
     res.end('there is some wrong in the server! please try later!');
+  }
+
+  /**
+   * 处理压缩编码
+   * 返回转换流，用于压缩
+   * @param req
+   * @param res
+   */
+  getEncoding(req, res) {
+    // 获取客户端支持的编码格式 gzip, deflate
+    const acceptEncoding = req.headers['accept-encoding'];
+    if (!acceptEncoding) {
+      return null;
+    }
+    if (acceptEncoding.match(/\bgzip\b/)) {
+      res.setHeader('Content-Encoding', 'gzip');
+      return zlib.createGzip();
+    }
+    if (acceptEncoding.match(/\bdeflate\b/)) {
+      res.setHeader('Content-Encoding', 'deflate');
+      return zlib.createDeflate();
+    }
+  }
+
+  /**
+   * 处理缓存
+   * 1. last-modify / if-modified-since
+   * 2. ETag / if-None-Match
+   * 3. cache-Control: private、public、max-age、no-cache、no-store
+   * @param req
+   * @param res
+   * @param filepath
+   * @param statePath
+   */
+  handleCache(req, res, filepath, statePath) {
+    try {
+      res.setHeader('Cache-Control', 'private,max-age=30');
+      res.setHeader('Expires', new Date(Date.now() + 30 * 1000).toUTCString());
+      const ifModifiedSince = req.headers['if-modified-since'];
+      const ifNoneMatch = req.headers['if-none-match'];
+      // 获取当前last-modified
+      const currentCtime = statePath.ctime.toUTCString();
+      // 比较ETag 摘要
+      const hash = crypto.createHash('md5');
+      const cr = fs.createReadStream(filepath);
+      return new Promise(resolve => {
+        cr.on('data', function (data) {
+          hash.update(data);
+        });
+        // 进行偷懒比较
+        cr.on('end', function () {
+          const hashHex = hash.digest('hex');
+          // 设置缓存
+          res.setHeader('ETag', hashHex);
+          res.setHeader('Last-Modified', currentCtime);
+          if (ifModifiedSince && currentCtime !== ifModifiedSince) {
+            return resolve(false);
+          }
+          if (ifNoneMatch && ifNoneMatch !== hashHex) {
+            return resolve(false);
+          }
+          if (!ifModifiedSince && !ifModifiedSince) {
+            return resolve(false);
+          }
+          resolve(true);
+        });
+      });
+    } catch (e) {
+      this.sendError(e)
+    }
+
   }
 }
 module.exports = Server;
