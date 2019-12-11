@@ -92,13 +92,17 @@ class Server {
       return;
     }
     // 设置header Content-Type
-    res.setHeader('Content-Type', mime.getType(filepath));
+    res.setHeader('Content-Type', mime.getType(filepath) + ';charset=utf8');
     const rs = fs.createReadStream(filepath);
     // 处理文件压缩
     const encoding = this.getEncoding(req, res);
     if (encoding) {
-      rs.pipe(encoding).pipe(res);
-      // fs.createReadStream(filepath).pipe(zlib.createGzip()).pipe(res);
+      console.log('zou encoding');
+      // rs.pipe(res);
+      // rs.pipe(encoding).pipe(res);
+      // NOTE 这里不知道怎回事，无法使用rs.pipe(encoding).pipe()
+      // NOTE 只能使用如下格式
+      fs.createReadStream(filepath).pipe(zlib.createGzip()).pipe(res);
     } else {
       rs.pipe(res);
     }
