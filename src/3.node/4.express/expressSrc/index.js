@@ -27,6 +27,12 @@ function createApplication() {
       // 中间件, 匹配路径，只能匹配前缀
       else if (isValidMiddleware(router, pathname)) {
         router.handler(req, res, next);
+        // 是否为占位符路径
+      } else if (router.regPath && pathname.match(router.regPath)) {
+        const matchers = pathname.match(router.regPath);
+        let i = 1;
+        req.params = router.paramsNames.reduce((p, n) => (p[n] = matchers[i ++], p), {});
+        router.handler(req, res);
       }
       // 匹配路由、具体方法、all、all-*
       else if ((router.path === pathname && (router.method === method || router.method === 'all'))
@@ -61,15 +67,40 @@ function createApplication() {
       handler
     });
   };
+  // 初始化内置中间件
+  // 处理参数
+  app.use(function (req, res, next) {
+    const urlObj = url.parse(req.url, true);
+    req.query =  urlObj.query;
+    req.path = urlObj.pathname;
+    req.hostname = req.headers['host'].split(':')[0];
+    next();
+  });
   // 通过http.METHODS定义的所有支持的方法遍历添加支持的扩展方法
   http.METHODS.forEach(i => {
     const method = i.toLowerCase();
     app[method] = function (path, handler) {
-      routesArray.push({
+      const layer = {
         method,
         path,
         handler
-      });
+      };
+      // 处理express
+      if (path.includes(':')) {
+        let paramsNames = [];
+        // 利用replace将字符串替换为正则表达式字符
+        // path => /user/:name/:age
+        // replace => /user/([^\/]*)/([^\/]*)
+        const regSrcPath = path.replace(/:([^\/]+)/g, function(_, v) {
+          paramsNames.push(v);
+          return '([^/]*)';
+        });
+        // 增加变量值
+        // NOTE express内部也是增加一个reg_path值
+        layer.regPath = new RegExp(regSrcPath);
+        layer.paramsNames = paramsNames;
+      }
+      routesArray.push(layer);
     }
   });
   return app;
