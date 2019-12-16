@@ -4,8 +4,8 @@
  * NOTE 所有注册顺序很重要，如果你把all(*)注册在最开始，那么所有的路由都会指向*的这个处理函数
  * @type {createApplication}
  */
-const express = require('./expressSrc');
-// const express = require('express');
+// const express = require('./expressBase');
+const express = require('express');
 const url = require('url');
 const app = express();
 
