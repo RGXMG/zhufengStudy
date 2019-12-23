@@ -1,5 +1,6 @@
 const url = require('url');
 const http = require('http');
+const pathToRexg = require('path-to-');
 const Route = require('./route');
 const Layer = require('./layer');
 
@@ -90,5 +91,8 @@ proto.handle = function (req, res, out) {
     }
   };
   next();
+};
+proto.param = function (name, handler) {
+
 };
 module.exports = Router;

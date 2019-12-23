@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
+// param 用来批处理路径参数，可以改变req， res得值
 app.param('uid', function(req, res, next, val, name) {
+  console.log('val', val);
+  console.log('name', name);
   req.user = { id: 1, name: 'xmg' };
   next();
 });

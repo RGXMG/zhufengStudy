@@ -9,6 +9,10 @@ Application.prototype.lazyrouter = function() {
     this._router = new Router();
   }
 };
+Application.prototype.param = function (name, handler) {
+  this.lazyrouter();
+  this._router.param.apply(this._router, arguments);
+};
 http.METHODS.forEach(method => {
   method = method.toLowerCase();
   Application.prototype[method] = function () {
