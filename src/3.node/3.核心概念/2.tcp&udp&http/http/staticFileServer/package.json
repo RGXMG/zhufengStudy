@@ -1,16 +1,21 @@
 {
   "name": "staticFileServer",
   "version": "1.0.0",
-  "description": "- 可以在任意目录下启动一个静态文件服务器，并且把当前目录作为静态文件服务器的根目录，命令如下：\r     ```javascript\r     xmg-server -d 指定静态文件根目录 -p 指定端口号 -o 指定监听的主机\r    ```\r ### 静态文件服务\r ### 实现缓存\r ### 实现断点续传，分块获取\r ### 实现压缩\r ### 实现命令行工具\r ### 实现配置，读取命令行参数 \r ### 加密和权限的功能",
+  "description": "可以在任意目录下启动一个静态文件服务器，并且把当前目录作为静态文件服务器的根目录",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "NOTE": "设置bin配置之后，在执行npm link之后，npm会读取package.json中的bin配置，然后将其注入到全局环境中，之后在任何地方都可以使用bin配置中的命令，具体可以百度",
+  "bin": {
+    "xmg-ss": "bin/www"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "chalk": "^3.0.0",
-    "debug": "^4.1.1"
+    "debug": "^4.1.1",
+    "handlebars": "^4.5.3"
   }
 }
