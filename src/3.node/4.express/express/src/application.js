@@ -22,6 +22,11 @@ Application.prototype.use = function () {
   this.lazyrouter();
   this._router.use.apply(this._router, arguments);
 };
+// param 可以使用字符匹配的参数
+Application.prototype.param = function () {
+  this.lazyrouter();
+  this._router.param.apply(this._router, arguments);
+};
 Application.prototype.listen = function() {
   const server = http.createServer((req, res) => {
     function done() {

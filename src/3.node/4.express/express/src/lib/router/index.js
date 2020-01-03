@@ -11,6 +11,9 @@ function Router() {
   }
   Object.setPrototypeOf(router, proto);
   router.stack = [];
+  // 声明一个param相关的回调函数保存器
+  // 当handle request时匹配到了param就从该容器中取得回调函数
+  router.paramCallbacks = [];
   return router;
 }
 
@@ -42,6 +45,12 @@ proto.use = function (path, handler) {
   layer.route = undefined;
   this.stack.push(layer);
 };
+proto.param = function(path, handler) {
+  if (!this.paramCallbacks[path]) {
+    this.paramCallbacks[path] = [];
+  }
+  this.paramCallbacks[path].push(handler);
+};
 /**
  * 1. 中间中间件
  * 2. 处理子路由器
@@ -66,6 +75,7 @@ proto.handle = function (req, res, out) {
       return out(err);
     }
     const layer = this.stack[idx++];
+    // 通过layer层的match方法去比较是否该自己处理
     if (layer.match(pathname)) {
       // 处理中间件
       if (!layer.route) {
@@ -81,6 +91,13 @@ proto.handle = function (req, res, out) {
           req.url = req.url.slice(removed.length);
         }
         layer.handle_request(req, res, next);
+      } else if (layer.params && Object.keys(layer.params).length) {
+        // 设置req中的params
+        req.params = layer.params;
+        // 进行params的callbacks处理
+        this.process_params(layer, req, res, (layer, req, res) => {
+          layer.handle_request(req, res, next);
+        });
       } else if (layer.route.handle_method(req.method.toLowerCase())) {
         layer.handle_request(req, res, next);
       }
@@ -90,5 +107,37 @@ proto.handle = function (req, res, out) {
     }
   };
   next();
+};
+/**
+ * 在该函数中处理param的callback
+ * @param layer
+ * @param req
+ * @param res
+ * @param out
+ */
+proto.process_params = function (layer, req, res, out) {
+  let indexOfKeys = 0, indexOfCallbacks = 0;
+  const keys = layer.keys;
+  const paramCallbacks = this.paramCallbacks;
+  const nextToKey = function() {
+    if (indexOfKeys >= keys.length) {
+      return out(layer, req, res);
+    }
+    const name = keys[indexOfKeys++].name;
+    const value = layer.params[name];
+    const paramCallback = paramCallbacks[name];
+    if (!paramCallback) {
+      return nextToKey();
+    }
+    const nextToCb = function() {
+      if (indexOfCallbacks >= paramCallback.length) {
+        return nextToKey();
+      }
+      const cb = paramCallback[indexOfCallbacks ++];
+      cb(req, res, nextToCb, value, name);
+    };
+    nextToCb();
+  };
+  nextToKey();
 };
 module.exports = Router;
