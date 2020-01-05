@@ -9,4 +9,4 @@ console.assert(1 === 1, 'error');
 console.dir(global);
 
 // 追踪执行栈
-console.trace();
+// console.trace();
