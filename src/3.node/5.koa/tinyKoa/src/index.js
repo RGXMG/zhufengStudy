@@ -1,4 +1,7 @@
 const http = require('http');
+const response = require('./response');
+const url = require('url');
+const Stream = require('stream');
 
 module.exports = class  TinyKoa {
   constructor() {
@@ -8,11 +11,22 @@ module.exports = class  TinyKoa {
     http.createServer(this.callback()).listen(...arguments)
   }
   createContext(req, res) {
-    return Object.assign(Object.create(null), {
+    const { pathname } = url.parse(req.url);
+    const context = Object.assign(Object.create(null), {
+      path: pathname || '/',
       body: null,
       req,
       res
     });
+    // 代理response
+    const responseTrack = Object.create(response);
+    responseTrack.req = context.req;
+    responseTrack.res = context.res;
+    context.response = responseTrack;
+    return context
+  }
+  set(name, val) {
+
   }
   compose(middlewareStack) {
     if (!Array.isArray(middlewareStack)) {
@@ -54,6 +68,8 @@ module.exports = class  TinyKoa {
 
   /**
    * 返回整个请求的处理
+   * 每次请求来的时候都需要重新组合
+   * 因为每次请求的时候的req和res是不一样的
    * 1. 中间件的执行
    * 2. response
    * @returns {Function}
@@ -86,13 +102,16 @@ module.exports = class  TinyKoa {
     return middlewareFn(ctx);
   }
   handleResponse(ctx) {
-    const body = ctx.body;
-    if (typeof body === 'object') {
-      ctx.res.end(JSON.stringify(body));
+    const { body, res } = ctx;
+    if (body instanceof Stream) {
+      body.pipe(res);
+    }
+    else if (typeof body === 'object') {
+      res.end(JSON.stringify(body));
     } else if (typeof body === 'number') {
-      ctx.res.end(body + '');
+      res.end(body + '');
     } else {
-      ctx.res.end(body);
+      res.end(body);
     }
   }
 };

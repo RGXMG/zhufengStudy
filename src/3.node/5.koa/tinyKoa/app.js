@@ -1,5 +1,7 @@
 const TinyKoa = require('./src');
+const staticFile = require('./src/middleware/tiny-koa-static');
 const app = new TinyKoa();
+app.use(staticFile('./src/middleware/tiny-koa-static/views'));
 app.use(async function (ctx, next) {
   console.log('1 - start, ', ctx.res.end);
   await next();
@@ -18,7 +20,7 @@ app.use(function (ctx, next) {
       console.log('3 - end');
       ctx.body = { name: 'sssss' };
       res();
-    }, 2000);
+  }, 2000);
   });
 });
 app.listen(8080);
