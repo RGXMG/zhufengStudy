@@ -1,3 +1,4 @@
+// https://github.com/geeknull/tiny-koa/blob/master/src/middleware/tiny-koa-views.js
 const path = require('path');
 const fs = require('fs');
 const mineType = require('mime');
@@ -21,7 +22,6 @@ module.exports = (baseDirPath) => async (ctx, next) => {
     ctx.response.set('Content-Type', mineType.getType(trackPath));
     return ctx.body = fs.createReadStream(trackPath);
   } catch (e) {
-    console.error(e);
     next();
   }
 };
@@ -30,7 +30,7 @@ const render = function(ctx, fileList) {
   ctx.response.set('Content-Type', 'text/html');
   ctx.body = `<ul>
        ${
-    fileList.map(file => '<li><a href="' + file + '">'+ (~file.indexOf('/') ? file : file.match(/.+\/(.+)/)[1]) +'</a></li>').join('')
+    fileList.map(file => '<li><a href="' + file + '">'+ file +'</a></li>').join('')
   }
     </ul>`;
 };
