@@ -1,8 +1,17 @@
+/**
+ * 内部有个事件流 tapable 1.0
+ */
+
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const cleanWebpackPlugin = require('clean-webpack-plugin');
-// 内部有个事件流 tapable 1.0
+/**
+ * miniCssExtractPlugin可以将页面的中的css文件单独提取出来，不让其打包到bundle.js中
+ * 1. 利用缓存使用公共css
+ * 2. 利用浏览器的并行加载，缩小加载时间
+ */
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   // 入口、相对路径
   // 1. string，一个入口文件
@@ -74,15 +83,15 @@ module.exports = {
   module: {
     // 规则处理
     rules: [
-      // file-loader是处理二进制数据，如文件，它会把文件从源位置复制到目标地址并修改引用地址
       {
-        test: /\.(png|jpg|jpeg|gif|svg|bml)/,
-        use: 'file-loader'
+        test: /.less$/,
+        // 使用miniCSSExtraPlugin将css-loader处理之后的css单独打包
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
       },
-      // {
-      //   test: require.resolve('jquery), // require.resolve拿到一个模块的绝对路径，引入在代码中导入的时候是一个绝对路径
-      //   loader: 'expose-loader?$'
-      // },
+      {
+        test: /.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
       {
         // 正则匹配去匹配css文件
         test: /\.css/,
@@ -90,12 +99,72 @@ module.exports = {
         // 多个话使用数组，执行顺序从右到左
         // css-loader解析处理css文件中的url路径，把css文件处理为一个模块
         // style-loader可以把css文件变成style标签插入head中
-        loader: ['style-loader', 'css-loader']
-      }
+        loader: [MiniCssExtractPlugin.loader, 'css-loader', {
+          loader: 'postcss-loader',
+          options: {
+            plugins: () => [require('postcss-preset-env')]
+          }
+        }]
+      },
+      /**
+       * 处理在html模板中的img图片
+       * 会改变图片的引用路径
+       */
+      {
+        test: /\.(html|htm)/,
+        use: 'html-withimg-loader'
+      },
+      /**
+       * url-loader
+       * 允许将文件转换为base64直接嵌入，转换条件为设置的limit大小，小于limit才会转换
+       * 如果大于limit的话会自动把控制权交给file-loader
+       */
+      {
+        test: /\.(png|jpg|jpeg|gif|svg|bml)$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            // 200KB 以内都转为base64
+            limit: 10 * 1024,
+
+            // file-loader的options
+            // file-loader新版本默认就是采用esModule加载
+            // 所以如果使用require的话，则需要配置esModule为false即可
+            esModule: false,
+            name: 'assets/[name].[hash:7].[ext]',
+            // 指定输出所有目录
+            outputPath: ''
+          }
+        }
+      },
+      // file-loader是处理二进制数据，如文件，它会把文件从源位置复制到目标地址并修改引用地址
+      {
+        // test: /\.(png|jpg|jpeg|gif|svg|bml)/,
+        // use: {
+        //   loader: 'file-loader',
+        //   options: {
+            // file-loader的options
+            // file-loader新版本默认就是采用esModule加载
+            // 所以如果使用require的话，则需要配置esModule为false即可
+            // esModule: false,
+            // name: '[name].[hash:7].[ext]',
+            // 指定输出所有目录
+            // outputPath: 'assets/'
+          // }
+        // }
+      },
+      // {
+      //   test: require.resolve('jquery), // require.resolve拿到一个模块的绝对路径，引入在代码中导入的时候是一个绝对路径
+      //   loader: 'expose-loader?$'
+      // },
     ]
   },
   // plugins 放置顺序与执行顺序无关，都是监听事件
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[hash:8].css',
+      chunkFilename: '[id].css',
+    }),
     // 用来自动向模块内容注入变量
     // 该插件解决在代码中不想频繁引入(import/require)其他模块(如A)，而直接使用A模块时
     // 只有在检测当前入口文件中使用下面需要注入的变量时才会注入该模块的代码
