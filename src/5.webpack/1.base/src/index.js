@@ -34,7 +34,12 @@ document.body.appendChild(imgDva);
 // expose-loader和webpack自带的plugin中的ProvidePlugin有点类似
 // 那就是在使用了之后，无需再次手动引入一个模块而可以直接使用
 const $ = require('expose-loader?$!jquery');
-require('./i2');
-
-console.log('index ---');
+require('./use$');
 $('#index').html('index');
+
+// es6的代码使用，使用babel编译
+import consoleColor from  './es6';
+consoleColor();
+
+// react使用
+import './reactIndex';

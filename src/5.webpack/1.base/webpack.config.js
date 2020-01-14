@@ -5,6 +5,7 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const copyWebpackPlugin = require('copy-webpack-plugin');
 const cleanWebpackPlugin = require('clean-webpack-plugin');
 /**
  * miniCssExtractPlugin可以将页面的中的css文件单独提取出来，不让其打包到bundle.js中
@@ -28,6 +29,8 @@ module.exports = {
   //   index: './src/index.js',
   //   base: './src/base.js',
   // },
+
+
   // 出口
   output: {
     // 绝对路径
@@ -37,9 +40,42 @@ module.exports = {
     // hash文件摘要，根据文件内容计算，默认很长，20位，:8就是代表8位
     filename: '[name].[hash:8].js'
   },
-  resolve: {
-    extensions: ['.js', '.ts', '.tsx']
+
+
+  // 监听原文件的变化，当源文件改变后，则重新打包
+  watch: true,
+  // watch配置文件
+  watchOptions: {
+    ignored: /node_modules/,
+    // 每秒轮询的次数
+    poll: 1000,
+    // 每次修改停止之后间隔时间才会编译(毫秒)，类似于防抖
+    aggregateTimeout: 500
   },
+
+
+
+  // 开发选项，可以设置如何处理编译的源码
+  // 各种格式 https://www.webpackjs.com/configuration/devtool/#devtool
+  // 下面只是列举几个
+  devtool: 'source-map', // 单独放置，打包慢，能准确定位
+  // devtool: 'inline-cheap-source-map', // 不单独放置，①base64编码格式追加到js文件末尾，只能定位到哪一行源码出错，打包快
+  // devtool: 'cheap-module-source-map', // 单独文件，打包速度一般，只能定位到哪一行出错
+
+
+  // 负责引入模块的时候，比如modules模块的寻址根路径，alias文件名依赖，extensions文件扩展名
+  resolve: {
+    // 模块的寻找根目录，当引入一个绝对路径的模块时，就会从下面的路径进行查找，默认是node_modules
+    // 比如自己有个lib文件夹，里面全是库，引入的时候不需要使用相对路径，而直接可以使用绝对路径
+    modules: ['node_modules', 'lib'],
+    // 引入文件的后缀，如引入./base，其中base为base.jsx，那么如果配置了extensions，则不需要在添加上后缀
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    // 引用一个库时/文件夹时，会首先找寻package.json中的字段中的入口文件，一般是main字段，
+    // 下面的意思就是说首先找寻main字段，如果没有则找寻node，这样依次找寻
+    mainFields: ['main', 'node', 'browser'],
+  },
+
+
   /**
    * loader可以配置在下方，也可以直接写在代码中的
    * 如：
@@ -81,8 +117,17 @@ module.exports = {
    *  }
    */
   module: {
+    // 不需要递归解析的文件，适用于排除那些已经编译过得文件，如*.min.js
+    noParse: [/.+\.min\.js/],
     // 规则处理
     rules: [
+      {
+        test: /.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
+      },
       {
         test: /.less$/,
         // 使用miniCSSExtraPlugin将css-loader处理之后的css单独打包
@@ -159,8 +204,17 @@ module.exports = {
       // },
     ]
   },
+
+
   // plugins 放置顺序与执行顺序无关，都是监听事件
   plugins: [
+    new copyWebpackPlugin([
+      {
+        from: './public',
+        to: './dist',
+        ignore: ['html'],
+      }
+    ]),
     new MiniCssExtractPlugin({
       filename: 'css/[name].[hash:8].css',
       chunkFilename: '[id].css',
