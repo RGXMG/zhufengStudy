@@ -1,0 +1,17 @@
+{
+  "name": "3.ast",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "escodegen": "^1.12.1",
+    "esprima": "^4.0.1",
+    "estraverse": "^4.3.0"
+  }
+}
