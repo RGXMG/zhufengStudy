@@ -12,33 +12,15 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/env',
-                // {
-                //   useBuiltIns: 'usage',
-                //   "corejs": 3
-                // }
-              ],
-            ],
-            plugins: [
-              [
-                "extra",
-                {
-                  "libraryName": "lodash"
-                }
-              ]
-            ]
-          }
-        }
+        use: 'babel-loader'
       }
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin(),
     new cleanWebpackPlugin.CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      filename: 'index.html',
+    }),
   ]
 };

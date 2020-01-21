@@ -1,5 +1,5 @@
 {
-  "name": "4.webpack_babel_plugin",
+  "name": "6.loader",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
@@ -11,15 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "@babel/types": "^7.8.3",
-    "babel-loader": "^8.0.6",
-    "clean-webpack-plugin": "^3.0.0",
-    "core-js": "3",
-    "html-webpack-plugin": "^3.2.0",
-    "lodash": "^4.17.15",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
+  },
+  "devDependencies": {
+    "less": "^3.10.3"
   }
 }
