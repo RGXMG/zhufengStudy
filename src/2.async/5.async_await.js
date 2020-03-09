@@ -27,6 +27,7 @@ read().then(res => console.log(res));
 // NOTE 实现原理
 // NOTE 实际上在async函数执行时就会转为下面这种方式
 function co(func) {
+
   const ltr = func();
   return new Promise(function(resolved, rejected) {
     ~(function next(lastVal) {

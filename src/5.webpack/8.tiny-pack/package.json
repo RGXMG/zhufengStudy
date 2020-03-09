@@ -1,0 +1,22 @@
+{
+  "name": "8.jgpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "jgpack": "./bin/jgpack.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.0.1",
+    "escodegen": "^1.14.1",
+    "esprima": "^4.0.1",
+    "estraverse": "^4.3.0",
+    "less": "^3.11.1",
+    "tapable": "^1.1.3"
+  }
+}

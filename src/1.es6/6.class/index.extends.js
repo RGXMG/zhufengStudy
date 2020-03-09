@@ -49,6 +49,7 @@ function _typeof(obj) {
   return _typeof(obj);
 }
 
+//
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === 'object' || typeof call === 'function')) {
     return call;
@@ -142,6 +143,9 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+// class使用的寄生组合继承
+// 在子类的构造函数中调用Parent.call(this);
+// 不使用new，而使用Object.create(Parent.prototype)
 var Global =
   /*#__PURE__*/
   function () {
@@ -175,6 +179,8 @@ var Parent =
 
       _classCallCheck(this, Parent);
 
+      // 调用父类的构造函数
+      // super('987978978') -> 就是寄生继承中的Parent.call(this);
       _this = _possibleConstructorReturn(this, _getPrototypeOf(Parent).call(this, '987978978'));
 
       _defineProperty(_assertThisInitialized(_this), 'sa', '123');

@@ -59,4 +59,5 @@ function co(func) {
 //     });
 //   })
 // });
+
 co(read).then(res => console.log(res));

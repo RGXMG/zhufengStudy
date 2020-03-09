@@ -11,7 +11,6 @@
 //   const vOfArray = [array[0][index]];
 // }, []);
 
-
 // const qs = require('qs');
 // const querystring = require('querystring');
 // const obj = { zx: { name: 1, age: 3 }, ji: { name: 3, age: 1 } };
@@ -24,3 +23,22 @@
 // const str = 'text/plain;charset=gbk';
 // const typeStr = contentType.parse(str);
 // console.log(typeStr, typeStr.parameters.charset);
+const path = require("path");
+// console.log(path.dirname('./src/index.js'));
+
+const cwd = process.cwd();
+const a = "./src/index.js";
+const b = "./b.js";
+
+// 加载路径：
+const loadPath = a => path.join(cwd, a);
+const relative = (a, b) => path.relative(a, b);
+
+// console.log(loadPath(a));
+// console.log(loadPath(b));
+// console.log(path.join('./', 'src', './b.js'));
+// console.log(relative(cwd, './src/main/index.js'));
+// console.log(loadPath('./src/main/index.js'));
+// [^/]+(?!.*\/)
+console.log(path.dirname(path.join('./src/main', './b.js')));
+console.log('./src/main/index.js'.replace(/\/[^/]+(?!.+)/g, ''));

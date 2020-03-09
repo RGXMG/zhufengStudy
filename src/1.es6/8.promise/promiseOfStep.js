@@ -44,7 +44,7 @@ function PromiseStep(task) {
   } catch (e) {
     rejected(e);
   }
-};
+}
 const handlePromise = function(promise, likePromise, resolved, rejected) {
   if (promise === likePromise) {
    return rejected(new TypeError('重复引用！'));
@@ -96,6 +96,7 @@ PromiseStep.prototype.then = function(resolved, rejected) {
   const onThenRejected = getFn(rejected, e =>  { throw e });
   const that = this;
   let newPromise = null;
+  // 前一个Promise处于pending状态，将
   if (this._status === statusObj.PENDING) {
     newPromise = new PromiseStep(function(res, rej) {
       that._thenArgsOfResolved.push(function() {
@@ -116,6 +117,7 @@ PromiseStep.prototype.then = function(resolved, rejected) {
         }
       });
     });
+    // 前一个Promise处于Resolved状态，
   } else if (this._status === statusObj.RESOLVED) {
     newPromise = new PromiseStep(function(res, rej) {
       setTimeout(function() {

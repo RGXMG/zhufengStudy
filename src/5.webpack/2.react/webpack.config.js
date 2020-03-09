@@ -53,19 +53,26 @@ module.exports = {
       // all表示以上两者都包括(推荐)
       // 还可以传入函数，参数为引入的名称
       // chunks: 'initial',
+
       // 默认，大于300k的包才做代码分割
       // minSize: 300000,
+
       // 默认，分割出来的每个包最大size，
       // 比如设为50000（500kb），那如果某个包分离出来后超过50kb，就会进行再分割，保证每个文件都不超过50kb
       // maxSize: 500000,
+
       // 默认，至少被引入一次就进行代码分隔
       // minChunks: 2,
+
       // 默认，浏览器最多并行请求5个js文件,也就是说，分割数量超过5个时，就会停止代码分割了
       // maxAsyncRequests: 5,
+
       // 默认，对于入口文件最多只分割3个js包，超过3个就停止
       // maxInitialRequests: 3,
+
       // 默认，文件名连接符
       // automaticNameDelimiter: '~',
+
       // 默认，分割后的文件名将根据chunks和cacheGroups自动生成名称。
       // name: false,
       cacheGroups: {

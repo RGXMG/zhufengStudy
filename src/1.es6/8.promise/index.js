@@ -1,6 +1,6 @@
 // NOTE 原生JS promise调用
 // const Promise  = require('./promise');
-const Promise  = require('./promiseOfStep');
+const Promise  = require('./2020.2.8_review_Promise');
 const pro = new Promise((res, rej) => {
   setTimeout(() => {
     res(9);
@@ -14,3 +14,4 @@ pro.then(res => {
   return 5555;
 }).then((res) => {console.log(res)});
 // 简单实现
+
