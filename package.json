@@ -23,6 +23,8 @@
     "koa-better-body": "^3.2.0",
     "koa-bodyparser": "^4.2.1",
     "koa-convert": "^1.2.0",
+    "less": "^3.11.1",
+    "less-loader": "^5.0.0",
     "mime": "^2.4.4",
     "mkdirp": "^0.5.1",
     "promises-aplus-tests": "^2.1.2",
