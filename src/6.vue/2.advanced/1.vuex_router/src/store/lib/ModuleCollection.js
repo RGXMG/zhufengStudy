@@ -1,16 +1,41 @@
 /**
  * NOTE module集合
- * 1. 格式化数据
- * 2. 定义children module
+ * 1. 将VUEX中的options中的modules数据进行格式化，为每一个模块创建一个module属性
+ * 2. 并递归处理，将每个module里面定义的modules变成该模块的_children模块
+ * 如将：
+  {
+    modules:
+    a: {
+      state: {},
+      modules: {
+        c: {
+          state: {}
+        }
+      }
+    },
+  },
+ }
+   处理成：{
+      a: {
+        state: {},
+        _children: {
+          c: {
+           state: {},
+           _children: {}
+          }
+        }
+      }
+   }
  */
 class ModuleCollection {
   constructor(options) {
     this.register([], options);
   }
   register(path, rootModule) {
+    // 为每一模块创建一个module属性
     let module = {
       state: rootModule.state,
-      _children: [],
+      _children: {},
       _rawModule: rootModule
     };
 
@@ -29,16 +54,23 @@ class ModuleCollection {
     }
 
     // 遍历当前的rootModule.modules，看是否存在module定义，并格式化
+    // 递归将当前模块的下面的modules添加到当前模块的_children里面
     // {
-    //   modules: {
-    //     a: {
+    // modules: {
+    //   a: {
+    //     modules: {
     //       c: {}
     //     },
-    //     b: {}
+    //     state: {}
+    //   },
+    //   b: {
+    //     modules: {
+    //       d: {}
+    //     }
     //   }
     // }
     // 1 => path: [a], 1.1 => path: [a, c]
-    // 2 => path: [b]
+    // 2 => path: [b], 2.2 => path: [b, d]
     Object.keys(rootModule.modules || {}).forEach(moduleName => {
       this.register(path.concat(moduleName), rootModule.modules[moduleName]);
     });

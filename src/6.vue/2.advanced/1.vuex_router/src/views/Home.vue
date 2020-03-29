@@ -3,7 +3,7 @@
     <img alt="Vue logo" src="../assets/logo.png" />
     <div>我的名字：{{ $store.state.name }}</div>
     <div>
-      我的年龄：{{ $store.getters["getAge"] }}
+      我的年龄：{{ $store.getters.getAge }}
       <button @click="changeAge">sync change age</button>
       <button @click="asyncChangeAge">async change age</button>
     </div>
@@ -15,7 +15,6 @@
 export default {
   name: "Home",
   mounted() {
-    console.log(this.$store);
     // setInterval(() => {
     //   this.$store.state.age += 1;
     // }, 1000);

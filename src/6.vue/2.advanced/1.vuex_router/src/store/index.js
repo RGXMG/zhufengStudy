@@ -4,21 +4,33 @@ import Vuex from "./lib";
 
 Vue.use(Vuex);
 
+const logger = store => {
+  store.subscribe(function(mutation) {
+    console.log(mutation);
+  });
+};
+
 export default new Vuex.Store({
+  plugins: [logger],
   state: {
     name: "XMG",
     age: 20
   },
   modules: {
     a: {
+      state: {},
       modules: {
-        c: {}
-      },
-      state: {}
+        c: {
+          state: {}
+        }
+      }
     },
     b: {
+      state: {},
       modules: {
-        d: {}
+        d: {
+          state: {}
+        }
       }
     }
   },
