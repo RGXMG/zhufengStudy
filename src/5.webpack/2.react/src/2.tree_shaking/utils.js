@@ -1,12 +1,6 @@
-import _ from 'lodash-es';
-const getName = () => {
-  return 'getName';
+export const getName = () => {
+  console.log("getName");
 };
-const getAge = () => {
-  _.filter([], () => {});
-  return 'getAge';
+export const getAge = () => {
+  console.log("getAge");
 };
-export {
-  getAge,
-  getName
-}
