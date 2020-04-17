@@ -44,13 +44,14 @@ class Button extends React.component {
 
 - 能保证在任何情况下都只会执行一次；
 
-### getDerivedStateFormProps【[官方](https://zh-hans.reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html)】
+### static getDerivedStateFromProps【[官方](https://zh-hans.reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html)】
 
 > 创建时和更新时都会执行
 > 该生命周期方法为新增方法，是为了解决内部组件要根据外部 props 改变内部 state 增设，也是为了代替 componentWillReceiveProps
 
 ### getSnapshotBeforeUpdate
-该方法并不常用，可以用在一些UI库中和一些特殊的逻辑，如在一个滚动试图中，当滚动位置不变，向顶部添加一个数据，这个时候滚动位置不会发生变化，但是内容就会被顶下来，就可以通过这个方法进行手动改变dom的scrollTop
+
+该方法并不常用，可以用在一些 UI 库中和一些特殊的逻辑，如在一个滚动试图中，当滚动位置不变，向顶部添加一个数据，这个时候滚动位置不会发生变化，但是内容就会被顶下来，就可以通过这个方法进行手动改变 dom 的 scrollTop
 
 ### 新本 lifeCycle：
 
