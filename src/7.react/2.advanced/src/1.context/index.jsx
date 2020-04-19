@@ -1,5 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
 
 /**
  * NOTE 1. 创建一个context
@@ -36,6 +35,7 @@ class Parent extends React.Component {
     );
   }
 }
+export default Parent;
 class Child1 extends React.Component {
   /**
    * NOTE 3. 在使用的地方使用static contextType 进行接收
@@ -120,5 +120,3 @@ class GandSon2 extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<Parent />, document.getElementById("root"));
