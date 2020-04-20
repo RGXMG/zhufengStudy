@@ -30,7 +30,6 @@ class Count extends React.Component {
     );
   }
 }
-
 // NOTE 1. class组件
 class Title extends PureComponent {
   componentDidUpdate(prevProps, prevState, snapshot) {
