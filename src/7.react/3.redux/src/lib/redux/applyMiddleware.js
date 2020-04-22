@@ -1,3 +1,4 @@
+import compose from "./compose";
 /**
  * NOTE 应用中间件的函数
  *  1. 该函数支持应用多个中间件，其原理跟koa的中间件相似
@@ -11,9 +12,12 @@ export default function applyMiddleware(...middleware) {
     const store = createStore(reducer, initialValue);
 
     // NOTE 创建一个仿造的store传入
-    let dispatch = () => throw new Error("还不能使用！");
+    let dispatch = () => {
+      throw new Error("还不能使用！");
+    };
     const storeCopy = {
-      dispatch,
+      // 保留dispatch函数的引用
+      dispatch: (...args) => dispatch(...args),
       getState: store.getState
     };
 
@@ -26,8 +30,11 @@ export default function applyMiddleware(...middleware) {
     const chain = middleware.map(middleware => middleware(storeCopy));
 
     // 最后将真正的store.dispatch方法传入，发起真正的action
-    compose(chain)(store.dispatch);
+    dispatch = compose(chain)(store.dispatch);
 
-    return store;
+    return {
+      ...store,
+      dispatch
+    };
   };
 }

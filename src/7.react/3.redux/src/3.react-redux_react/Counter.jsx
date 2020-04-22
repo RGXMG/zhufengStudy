@@ -10,6 +10,7 @@ class Counter extends Component {
         <hr />
         <h1>react-redux + redux + react结合</h1>
         <h4>number: {this.props.number}</h4>
+        <button onClick={this.props.onAsyncAdd}>异步+</button>
         <button onClick={() => this.props.dispatch({ type: "add" })}>+</button>
         <button onClick={this.props.onReduce}>-</button>
       </div>
@@ -32,6 +33,7 @@ const mapDispatchToProps = function(dispatch) {
   // 也可以将dispatch函数注入到组件中
   return {
     dispatch,
+    onAsyncAdd: action.onAsyncAdd,
     onReduce: action.onReduce,
     onAdd: action.onAdd
   };
