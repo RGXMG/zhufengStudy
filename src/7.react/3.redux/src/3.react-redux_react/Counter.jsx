@@ -10,6 +10,10 @@ class Counter extends Component {
         <hr />
         <h1>react-redux + redux + react结合</h1>
         <h4>number: {this.props.number}</h4>
+        <button onClick={this.props.onPromiseOfPayloadAdd}>
+          promise_payload + 10
+        </button>
+        <button onClick={this.props.onPromiseOfFnAdd}>promise+</button>
         <button onClick={this.props.onAsyncAdd}>异步+</button>
         <button onClick={() => this.props.dispatch({ type: "add" })}>+</button>
         <button onClick={this.props.onReduce}>-</button>
@@ -35,7 +39,9 @@ const mapDispatchToProps = function(dispatch) {
     dispatch,
     onAsyncAdd: action.onAsyncAdd,
     onReduce: action.onReduce,
-    onAdd: action.onAdd
+    onAdd: action.onAdd,
+    onPromiseOfFnAdd: action.onPromiseOfFnAdd,
+    onPromiseOfPayloadAdd: action.onPromiseOfPayloadAdd
   };
 
   /*
@@ -46,7 +52,4 @@ const mapDispatchToProps = function(dispatch) {
    }
   * */
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Counter);
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
