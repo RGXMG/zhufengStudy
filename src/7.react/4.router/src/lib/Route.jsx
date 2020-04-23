@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { pathToRegexp } from "path-to-regexp";
 import routerContext from "./context";
 
 class Route extends Component {
@@ -7,8 +8,18 @@ class Route extends Component {
     const {
       location: { pathname }
     } = this.context;
-    const { path } = this.props;
-    if (path === pathname) return this.props.children;
+    const { path, children, component: Component } = this.props;
+    const regex = pathToRegexp(path, [], { end: false });
+    if (pathname.match(regex))
+      return Component ? (
+        typeof Component === "function" ? (
+          <Component />
+        ) : (
+          Component
+        )
+      ) : (
+        children || null
+      );
     return null;
   }
 }

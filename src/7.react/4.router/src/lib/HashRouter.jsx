@@ -8,6 +8,10 @@ class HashRouter extends Component {
       location: this.getLocationInfo()
     };
   }
+  push({ path, state = null }) {
+    window.location.hash = "#" + path;
+    window.location.state = state;
+  }
   getLocationInfo() {
     if (!window.location.hash) {
       window.location.hash = "#/";
@@ -28,8 +32,12 @@ class HashRouter extends Component {
   }
 
   render() {
+    const nState = {
+      location: this.state.location,
+      history: { push: this.push }
+    };
     return (
-      <RouterContext.Provider value={this.state}>
+      <RouterContext.Provider value={nState}>
         {this.props.children}
       </RouterContext.Provider>
     );
