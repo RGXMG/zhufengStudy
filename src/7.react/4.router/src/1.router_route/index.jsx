@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { HashRouter as Router, Route, Link } from "../lib";
+import { HashRouter as Router, Route, Link, MenuLink } from "../lib";
 // import { HashRouter as Router, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import User from "./User";
@@ -10,23 +10,23 @@ class Index extends Component {
     return (
       <Router>
         <div style={{ margin: 20, border: "solid 1px red" }}>
-          <Link to="/" style={{ paddingLeft: 10 }}>
+          <MenuLink exact to="/" style={{ padding: 5 }}>
             home
-          </Link>
-          <Link to="/user" style={{ paddingLeft: 10 }}>
+          </MenuLink>
+          <MenuLink to="/user" style={{ padding: 5 }}>
             user
-          </Link>
-          <Link to="/recommend" style={{ paddingLeft: 10 }}>
+          </MenuLink>
+          <MenuLink to="/recommend/2/name" style={{ padding: 5 }}>
             recommend
-          </Link>
+          </MenuLink>
         </div>
-        <Route path="/">
+        <Route exact path="/">
           <Home />
         </Route>
         <Route path="/user">
           <User />
         </Route>
-        <Route path="/recommend">
+        <Route path="/recommend/:id/:name">
           <Recommend />
         </Route>
       </Router>

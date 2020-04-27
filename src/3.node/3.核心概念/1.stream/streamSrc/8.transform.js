@@ -4,6 +4,7 @@ const { Transform } = require('stream');
 // 可用作加密
 const t  = Transform({
   transform(chunk, encoding, callback) {
+    console.log(this);
     this.push(chunk.toString().toUpperCase());
     callback();
   }

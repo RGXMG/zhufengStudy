@@ -1,15 +1,15 @@
-const fs = require('fs');
-const EventEmitter = require('events');
+const fs = require("fs");
+const EventEmitter = require("events");
 
-class 3 extends EventEmitter {
+class ReadStream extends EventEmitter {
   constructor(path, options) {
     super(path, options);
     const {
-      flags = 'r',
+      flags = "r",
       mode = 0o666,
       end = 0,
       start = 0,
-      encoding = 'utf8',
+      encoding = "utf8",
       autoClose = false,
       // 默认32k
       highWaterMark = 32 * 1024
@@ -33,21 +33,21 @@ class 3 extends EventEmitter {
       reading: false
     });
     this.open();
-    this.on('newListener', (type,callback) => {
-      if (type === 'data' && !this.reading) {
+    this.on("newListener", (type, callback) => {
+      if (type === "data" && !this.reading) {
         this.read(callback);
       }
-    })
+    });
   }
   endFn(err) {
     if (err) {
-      this.emit('error', err);
+      this.emit("error", err);
     } else {
-      this.emit('end');
+      this.emit("end");
     }
     if (this.autoClose) {
       fs.close(this.fd, () => {
-        this.emit('close');
+        this.emit("close");
       });
     }
   }
@@ -58,13 +58,16 @@ class 3 extends EventEmitter {
         return this.close(err);
       }
       this.fd = fd;
-      this.emit('open');
+      this.emit("open");
     });
   }
 
   read() {
     const execute = () => {
-      let howMuchRead = this.end > 0 ? Math.min(this.end - this.pos + 1, this.highWaterMark) : this.highWaterMark;
+      let howMuchRead =
+        this.end > 0
+          ? Math.min(this.end - this.pos + 1, this.highWaterMark)
+          : this.highWaterMark;
       fs.read(this.fd, this.buffer, 0, howMuchRead, this.pos, (err, bytes) => {
         if (err) {
           return this.endFn(err);
@@ -77,7 +80,7 @@ class 3 extends EventEmitter {
         if (this.encoding) {
           data = data.toString(this.encoding);
         }
-        this.emit('data', data);
+        this.emit("data", data);
         if (this.end && this.pos > this.end) {
           return this.endFn();
         } else if (this.flowing) {
@@ -86,18 +89,18 @@ class 3 extends EventEmitter {
       });
     };
     if (!this.fd) {
-      this.once('open', execute);
+      this.once("open", execute);
     } else execute();
   }
 
   pipe(dest) {
-    this.on('data', data => {
+    this.on("data", data => {
       const flag = dest.write(data);
       if (!flag) {
         this.pause();
       }
     });
-    dest.on('drain', () => {
+    dest.on("drain", () => {
       this.resume();
     });
   }
