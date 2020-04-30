@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { HashRouter as Router, Route, Link, MenuLink } from "../lib";
+import { BrowserRouter as Router, Route, Link, MenuLink } from "../lib";
 // import { HashRouter as Router, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import User from "./User";

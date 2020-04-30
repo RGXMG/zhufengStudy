@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 // import { Link, Switch, Route, Redirect } from "react-router-dom";
-import { Link, Switch, Route, Redirect } from "../lib";
+import { Link, Switch, Route, Redirect, Prompt } from "../lib";
 import BaseInfo from "./User/BaseInfo";
 import Pwd from "./User/Pwd";
 
 class User extends Component {
+  constructor() {
+    super();
+  }
   render() {
     return (
       <div style={{ marginLeft: 20, display: "flex" }}>
@@ -17,7 +20,7 @@ class User extends Component {
           <Switch>
             <Route path="/user/baseInfo" component={<BaseInfo />} />
             <Route path="/user/pwd" component={Pwd} />
-            <Redirect to="/user/baseInfo" />
+            <Redirect to="/user/pwd" />
           </Switch>
         </div>
       </div>

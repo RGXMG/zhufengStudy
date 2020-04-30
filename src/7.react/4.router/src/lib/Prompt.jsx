@@ -14,9 +14,12 @@ import RouterContext from "./context";
  */
 function Prompt({ when, message }) {
   return (
-    <RouterContext.consumer>
-      {context => (when ? context.block(message) : context.block(null), null)}
-    </RouterContext.consumer>
+    <RouterContext.Consumer>
+      {context => (
+        when ? context.history.block(message) : context.history.block(null),
+        null
+      )}
+    </RouterContext.Consumer>
   );
 }
 

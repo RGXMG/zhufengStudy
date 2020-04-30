@@ -6,7 +6,6 @@ function MenuLink(props) {
     <Route
       {...{ ...rest, path: to }}
       children={props => {
-        console.log("MenuLink:::", to, rest, props);
         return (
           <Link {...rest} className={props.match ? "active" : ""} to={to}>
             {children}

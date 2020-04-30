@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import RouterContext from "./context";
 
-class HashRouter extends Component {
+/**
+ * NOTE BrowserRouter
+ *  1. 监听window.on('popstate')方法，当浏览器前进后退时改变路由
+ *  2. 代理window.history.pushState，当执行pushState方法时，改变路由状态
+ */
+let oldPushState = window.history.pushState;
+class BrowserRouter extends Component {
   constructor() {
     super();
     this.message = null;
@@ -23,26 +29,26 @@ class HashRouter extends Component {
       if (!confirm) return;
     }
     this.message = null;
-    window.location.hash = "#" + path;
-    window.location.state = state;
+    oldPushState.call(window.history, state, null, path);
+    this.pathChange();
   }
   getLocationInfo() {
-    if (!window.location.hash) {
-      window.location.hash = "#/";
+    if (!window.location.pathname) {
+      window.location.pathname = "/";
     }
-    const pathname = window.location.hash.slice(1);
+    const { pathname } = window.location;
     return { pathname };
   }
-  hashChange() {
+  pathChange() {
     this.setState(state => ({
       location: { ...state.location, ...this.getLocationInfo() }
     }));
   }
   componentDidMount() {
-    window.addEventListener("hashchange", this.hashChange.bind(this));
+    window.onpopstate = this.pathChange;
   }
   componentWillUnmount() {
-    window.removeEventListener(this.hashChange);
+    window.onpopstate = null;
   }
 
   render() {
@@ -54,4 +60,4 @@ class HashRouter extends Component {
   }
 }
 
-export default HashRouter;
+export default BrowserRouter;

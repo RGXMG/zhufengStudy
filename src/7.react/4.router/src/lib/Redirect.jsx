@@ -3,9 +3,12 @@ import routerContext from "./context";
 
 class Redirect extends Component {
   static contextType = routerContext;
-  render() {
+  componentDidMount() {
     const { history } = this.context;
     history.push({ path: this.props.to });
+  }
+
+  render() {
     return null;
   }
 }
