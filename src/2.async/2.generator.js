@@ -16,7 +16,7 @@ let a = it.next();
 console.log(a);
 // next中的值会被付给上一个yield左边的值
 let b = it.next('i am a');
-console.log(b);
-it.next('i am b');
-let c = it.next();
-console.log(c);
+// console.log(b);
+// it.next('i am b');
+// let c = it.next();
+// console.log(c);

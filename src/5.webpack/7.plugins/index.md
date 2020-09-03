@@ -16,3 +16,6 @@ compilation对象代表了一次资源版本的构建，当运行webpack开发�
 
 ### plugin
 1. plugin自身可以定义事件，其他plugin可以监听这些事件再次处理其他plugin处理过的数据，如[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin)的一些事件；见plugins中的**1.inline-plugin**中使用的html-webpack-plugin提供的事件；
+
+### 参考文档：
+[webpack plugin](https://blog.51cto.com/13869008/2166334)

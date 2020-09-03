@@ -26,7 +26,7 @@ export default context => {
 
       // NOTE 2.处理组件中的asyncData方法
       //  将所有的组件的asyncData方法的返回值(很有可能是promise)保存，待所有方法都resolve掉时
-      //  表示更改store数据完毕，我们需要将最新的store数据半保存在context.state中，
+      //  表示更改store数据完毕，我们需要将最新的store数据保存在context.state中，
       const pros = router
         .getMatchedComponents()
         .map(i => Promise.resolve(i.asyncData ? i.asyncData(store) : null));

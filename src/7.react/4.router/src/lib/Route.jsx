@@ -10,7 +10,7 @@ class Route extends Component {
     } = this.context;
     // children 任何时候都会渲染
     // component 以及 render 在匹配上才会渲染
-    const {
+    const { 
       path = "/",
       exact,
       render,

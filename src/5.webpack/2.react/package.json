@@ -5,6 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack --mode development",
+    "build:pro": "webpack --mode production",
     "build-dll": "cross-env NODE_ENV=development && webpack --config webpack.dll.config.js --mode development",
     "dev": "webpack-dev-server --open --mode development"
   },

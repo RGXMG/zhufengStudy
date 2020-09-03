@@ -20,24 +20,6 @@ function *read() {
 }
 
 function co(func) {
- //  const ltr = func();
- //  let item = ltr.next();
- //  if (item.done) return item.value;
- // const then = function(r) {
- //   item = ltr.next(r);
- //   if (!item.done) {
- //    return constr();
- //   }
- //   return item.value;
- // };
- // const constr = function() {
- //   return new Promise((res, rej) => {
- //     item.value.then(r => {
- //       res(r);
- //     });
- //   }).then(then);
- //  };
- //  return constr();
   let ltr = func();
   return new Promise(function(resolved, rejected) {
     ~(function next(lastVal){

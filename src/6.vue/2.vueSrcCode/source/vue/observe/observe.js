@@ -8,7 +8,7 @@ class Observe {
   // data就是vm._data
   constructor(data) {
     // NOTE 在Observe上添加的dep
-    // 此dep是为了
+    // 此dep是为了给数组提供dep
     this.dep = new Dep();
 
     // NOTE 因为在检测Array的7个方法中，当数据改变时，也应该调用Observe的notify方法
