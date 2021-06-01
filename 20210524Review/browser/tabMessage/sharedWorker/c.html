@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script>
+      let myWorker = new SharedWorker("worker.js", "awesome worker");
+      function send() {
+        myWorker.port.postMessage("11111111");
+      }
+      myWorker.port.onmessage = function(message) {
+        console.log("c:::", message);
+      };
+    </script>
+  </head>
+  <body>
+    <button onclick="send">发送消息</button>
+  </body>
+</html>
