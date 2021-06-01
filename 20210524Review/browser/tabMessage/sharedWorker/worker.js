@@ -7,25 +7,27 @@
  *
  */
 // worker.js
-const portPool = [];
+// 储存所有连接的port
+let portPool = [];
+// 监听接入的port
 self.onconnect = function(e) {
-  var port = e.ports[0];
+  const port = e.ports[0];
+  // 保存接入的port
   portPool.push(port);
-  console.log("port:::", port);
+  // port发送的消息
   port.onmessage = function(e) {
-    console.log(e);
+    // 判断连接断开，移除断开的port
     if (e.data === "TO BE CLOSED") {
-      const index = ports.findIndex(p => p === port);
+      const index = portPool.findIndex(p => p === port);
       portPool.splice(index, 1);
     }
-    var workerResult = "Result: " + e.data[0] * e.data[1];
-    boardcast(workerResult);
-    // port.postMessage(workerResult);
+    // 通知除当前port之外的所有port
+    broadcast(e.data, port);
   };
 };
 
-function boardcast(message) {
+function broadcast(message, selfPort) {
   portPool.forEach(port => {
-    port.postMessage(message);
+    port !== selfPort && port.postMessage(message);
   });
 }

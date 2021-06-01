@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <title>Title</title>
+    <title>c</title>
     <script>
       let myWorker = new SharedWorker("worker.js", "awesome worker");
       function send() {
-        myWorker.port.postMessage("11111111");
+        myWorker.port.postMessage(document.getElementById('input').value);
+        document.getElementById('input').value = '';
       }
-      myWorker.port.onmessage = function(message) {
-        console.log("c:::", message);
+      myWorker.port.onmessage = function(e) {
+        document.getElementById('content').innerText = document.getElementById('content').innerText + '\n' + e.data;
       };
     </script>
-  </head>
-  <body>
-    <button onclick="send">发送消息</button>
-  </body>
+</head>
+<body>
+<input type="text" id="input" />
+<button onclick="send()">发送消息</button>
+<div id="content">
+</div>
+</body>
 </html>
