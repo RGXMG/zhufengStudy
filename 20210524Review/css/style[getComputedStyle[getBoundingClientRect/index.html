@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #divA {
+            background-color: red;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="divA" style="padding: 20px; color: #fff; box-sizing: content-box">123</div>
+<script type="text/javascript">
+    const divADom = document.querySelector('#divA');
+    // 内联style标签：N
+    // 内联style属性：P
+    // 外链link属性：L
+
+    // 通过style对象
+    console.log(divADom.style.padding); // 20px
+    console.log(divADom.style.backgroundColor); // ''
+    console.log(divADom.style.border); // ''
+
+    // 通过style对象
+    console.log(document.defaultView.getComputedStyle(divADom, null).padding); // 20px
+    console.log(document.defaultView.getComputedStyle(divADom, null).backgroundColor); // rgb(255, 0, 0)
+    console.log(document.defaultView.getComputedStyle(divADom, null).borderLeftStyle); // solid
+    console.log(document.defaultView.getComputedStyle(divADom, null).width); //
+    console.log(document.defaultView.getComputedStyle(divADom, null).height); //
+
+    console.log(divADom.getBoundingClientRect())
+
+</script>
+</body>
+</html>
