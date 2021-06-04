@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>移动端布局</title>
+    <script>
+      var dpr = window.devicePixelRatio;
+      var meta = document.createElement('meta');
+
+      // dpr
+      meta.setAttribute('name', 'viewport');
+      // meta.setAttribute('content', 'initial-scale=' + 1 / dpr + ', maximum-scale=' + 1 / dpr + ', minimum-scale=' + 1 / dpr + ', user-scalable=no');
+      meta.setAttribute('content', 'width=device-width; initial-scale=' + 1 + ', maximum-scale=' + 1 + ', minimum-scale=' + 1 + ', user-scalable=no');
+      document.getElementsByTagName('head')[0].appendChild(meta);
+
+      // rem
+      document.addEventListener('DOMContentLoaded', function (e) {
+        document.getElementsByTagName('html')[0].style.fontSize = window.innerWidth / 10 + 'px';
+      }, false);
+
+
+    </script>
+</head>
+<body>
+<div style="width: 4rem; height: 2rem;background-color: #8cc5ff;border: solid 1px red">
+    123123
+</div>
+</body>
+</html>
