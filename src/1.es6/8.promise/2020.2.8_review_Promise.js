@@ -59,8 +59,8 @@ function ReviewPromise(task) {
  * @param reject
  */
 const handlePromise = function(rp, res, resolve, reject) {
-  // 判断res是不是返回的ReviewPromise实例，如果是实例，则判断时就会陷入死循环
-  if (res instanceof ReviewPromise) {
+  // 如果结果值和rp为同一promise对象，则就会陷入死循环，需要抛出typeError错误
+  if (res === rp) {
     return reject(new TypeError('循环引用'));
   }
   // 定义一个called变量，避免一些实现不规范的Promise库调用多次
@@ -92,6 +92,7 @@ const handlePromise = function(rp, res, resolve, reject) {
     }
   } else resolve(res);
 };
+
 ReviewPromise.prototype.then = function (onFulfilled, onRejected) {
   const _onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v;
   const _onRejected = typeof onRejected === 'function' ? onRejected : e => { throw e };

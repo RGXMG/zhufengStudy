@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>requestAnimationFrame接收端</title>
+</head>
+<body>
+<div id="div"></div>
+<script>
+  const broadcastChannel = new BroadcastChannel('name');
+  broadcastChannel.onmessage = function(a) {
+    document.getElementById('div').innerHTML = a.data;
+  }
+</script>
+</body>
+</html>

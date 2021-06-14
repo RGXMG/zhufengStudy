@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微任务</title>
+</head>
+<body>
+<script>
+    setTimeout(() => {
+      console.log('setTimeout执行---');
+    });
+    new Promise((res) => {
+      console.log('promise的第一个then');
+      res();
+    }).then(() => {
+      console.log('promise的第二个then');
+    })
+      .then(() => {
+        console.log('promise的第二个then');
+      })
+      .then(() => {
+        console.log('promise的第二个then');
+      })
+      .then(() => {
+        console.log('promise的第二个then');
+      })
+      .then(() => {
+        console.log('promise的第二个then');
+      })
+      .then(() => {
+        console.log('promise的第二个then');
+      });
+</script>
+</body>
+</html>

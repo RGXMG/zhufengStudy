@@ -245,7 +245,7 @@ PromiseOfUser.race = function(promises) {
       promise.then(resolve, reject);
     });
   });
-}
+};
 
 // 用于promise方法链时 捕获前面onFulfilled/onRejected抛出的异常
 PromiseOfUser.prototype.catch = function(onRejected) {

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>requestIdleCallback</title>
+</head>
+<body>
+<script>
+    var i = 100;
+  (function left() {
+    i --;
+    requestAnimationFrame((arguments) => {
+      console.log(arguments);
+      i && left()
+    })
+  })();
+
+  (function idle() {
+    requestIdleCallback(() => {
+      console.log('requestIdleCallback::::');
+      i && idle();
+    });
+  })()
+</script>
+</body>
+</html>

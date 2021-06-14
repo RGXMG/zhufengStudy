@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>requestAnimationFrame</title>
+</head>
+<body>
+<div id="div" style="position: fixed; width: 100px; height:100px;background-color: red"></div>
+<script>
+  let divDom = document.getElementById('div');
+  (function left() {
+    requestAnimationFrame((arguments) => {
+      console.log(arguments, divDom.style.left);
+      let nextLeft = Number(divDom.style.left.replace('px', '')) + 1;
+      // divDom.style.left = `${nextLeft}px`;
+      nextLeft < 200 && left();
+    })
+  })();
+
+  console.time();
+  for (let i=10000;i;i --) {
+    console.log(i);
+  }
+  console.timeEnd();
+
+  //   var a = 1;
+  // const broadcastChannel = new BroadcastChannel('name');
+  //   function broadMsg() {
+  //     requestAnimationFrame(() => {
+  //       broadcastChannel.postMessage(a ++);
+  //       broadMsg();
+  //     })
+  //   }
+  // broadMsg();
+</script>
+</body>
+</html>
