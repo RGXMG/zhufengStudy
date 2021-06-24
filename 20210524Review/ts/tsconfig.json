@@ -6,11 +6,14 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "es6",
     "allowJs": true,
     "sourceMap": false,
     "outDir": "./dist",
     "baseUrl": "./src",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "*": ["types/*"]
+    }
   }
 }
