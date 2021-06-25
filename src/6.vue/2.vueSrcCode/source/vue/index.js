@@ -16,7 +16,7 @@ function Vue(options) {
  * @param options
  * @private
  */
-Vue.prototype._init = function(options) {
+Vue.prototype._init = function (options) {
   const vm = this;
   // this.$options表示的就是Vue中的参数
   vm.$options = options;
@@ -46,7 +46,7 @@ function query(el) {
  */
 function compiler(node, vm) {
   const childNodes = node.childNodes;
-  childNodes.forEach(child => {
+  childNodes.forEach((child) => {
     if (child.nodeType === 1) {
       compiler(child, vm);
     } else if (child.nodeType === 3) {
@@ -55,7 +55,7 @@ function compiler(node, vm) {
   });
 }
 
-Vue.prototype._update = function() {
+Vue.prototype._update = function () {
   const vm = this;
   const el = vm.$el;
 
@@ -73,7 +73,7 @@ Vue.prototype._update = function() {
   compiler(node, vm);
   el.appendChild(node);
 };
-Vue.prototype.$mount = function() {
+Vue.prototype.$mount = function () {
   const vm = this;
   let el = (vm.$el = query(vm.$options.el));
 
@@ -87,8 +87,7 @@ Vue.prototype.$mount = function() {
   // 渲染watcher
   // 默认就会调用updateComponent方法
   new Watcher(vm, updateComponent);
-
-  //
+  vm.$options.mounted.call(vm);
 };
 /**
  * 创建一个watcher
@@ -99,7 +98,7 @@ Vue.prototype.$mount = function() {
  * @param handler
  * @param options
  */
-Vue.prototype.$watch = function(key, handler, options) {
+Vue.prototype.$watch = function (key, handler, options) {
   new Watcher(this, key, handler, { user: true, ...options });
 };
 export default Vue;

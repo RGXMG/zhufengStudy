@@ -5,31 +5,38 @@ const vm = new Vue({
   data() {
     return {
       firstName: "rg",
-      lastName: "xmg",
-      msg: "hello",
-      school: {
-        name: "xmg",
-        age: 18
-      },
-      arr: [[[5]], 1, 2, 3]
+      // lastName: "xmg",
+      // msg: "hello",
+      // school: {
+      //   name: "xmg",
+      //   age: 18
+      // },
+      // arr: [[[5]], 1, 2, 3]
     };
+  },
+  mounted() {
+    setTimeout(() => {
+      console.log("该改变firstName");
+      this.firstName += "rg@@";
+    }, 2000);
   },
   computed: {
     fullName() {
-      return this.firstName + this.lastName;
-    }
+      console.log("计算：：：fullName");
+      return this.firstName + "XMG";
+    },
   },
   watch: {
-    msg(n, o) {
-      console.log("msg:::", n, o);
+    fullName(n, o) {
+      console.log("watch:::fullName:::", n, o);
     },
-    "school.name": {
-      immediate: true,
-      handler(n, o) {
-        console.log("msg immediate:::", n, o);
-      }
-    }
-  }
+    // "school.name": {
+    //   immediate: true,
+    //   handler(n, o) {
+    //     console.log("msg immediate:::", n, o);
+    //   }
+    // }
+  },
 });
 window.vm = vm;
 console.log(vm);

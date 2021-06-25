@@ -10,7 +10,7 @@ import { getValue } from "../utils";
 
 class Watcher {
   /**
-   *
+   * 创建观察者
    * @param vm
    * @param exprOrFn 表达式或者函数
    * @param cb 回调函数

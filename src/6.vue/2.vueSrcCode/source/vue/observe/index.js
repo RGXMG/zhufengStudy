@@ -35,7 +35,7 @@ function proxy(vm, source, key) {
     },
     set(nv) {
       vm[source][key] = nv;
-    }
+    },
   });
 }
 
@@ -83,13 +83,44 @@ function initData(vm) {
  */
 function createComputedGetter(vm, key) {
   const watcher = vm._watchersComputed[key];
-  return function() {
+  return function () {
     if (watcher) {
       if (watcher.dirty) {
         watcher.evaluate();
       }
       if (Dep.target) {
-        // 向watcher中包含的dep观测数据中的dep添加渲染watcher
+        // 向computed属性自己的watcher实例上面添加当前使用该computed属性的watcher实例
+        // 即：当某个watcher(A)使用了该computed属性，因为computed本身就是个watcher(B)
+        // 所以当B变化时，应该通知A，所以在B上就需要建立dep去储存依赖B的A
+        // (如渲染watcher或者$options的watch或者computed的属性的watcher)
+        /**
+         * export default {
+         *   data() {
+         *     return {
+         *       name: 'A'
+         *     }
+         *   },
+         *   computed: {
+         *     // 会创建一个watcherA
+         *     getFullName() {
+         *       return this.name + 'B';
+         *     },
+         *     // 会创建一个watcherB
+         *     // 又因为依赖watcherA，所以在watcherA中应该加入B
+         *     fullNameLength() {
+         *       return this.getFullName.length;
+         *     }
+         *   },
+         *   // 会创建一个watcherC
+         *   // 又因为依赖watcherB，所以在watcherA中应该加入C
+         *   watch: {
+         *     'fullNameLength'(n, o) {
+         *       console.log(n, o);
+         *     }
+         *   }
+         * }
+         *
+         */
         watcher.depend();
       }
       // computed计算属性的值将会缓存到watcher的value上
@@ -112,12 +143,12 @@ function initComputed(vm) {
     // 将新创建的watcher进行添加到vm上，
     // lazy代表为computed属性，watcher就不会立即执行get方法
     vm._watchersComputed[key] = new Watcher(vm, computed[key], () => {}, {
-      lazy: true
+      lazy: true,
     });
 
     // 将computed的key值定义到vm上，这样就能够直接通过vm[key]获取
     Object.defineProperty(vm, key, {
-      get: createComputedGetter(vm, key)
+      get: createComputedGetter(vm, key),
     });
   }
 }
