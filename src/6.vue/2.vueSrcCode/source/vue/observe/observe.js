@@ -16,7 +16,7 @@ class Observe {
     // 所以采取在对象本身上面添加一个__ob__属性指向当前的Observe
     // 之所以在所有的对象上面添加该属性，也是想可以通过该属性对一个对象是否被监听可以做出判断
     Object.defineProperty(data, "__ob__", {
-      get: () => this
+      get: () => this,
     });
 
     // NOTE 定义数组的观测方式
@@ -52,7 +52,7 @@ class Observe {
  */
 function defineReactive(data, key, value) {
   const childOb = observe(value);
-  const dep = new Dep();
+  const dep = (window[key + "Dep"] = new Dep());
   // vue 不支持ie8 即ie8以下的浏览器
   Object.defineProperty(data, key, {
     get() {
@@ -87,7 +87,7 @@ function defineReactive(data, key, value) {
       observe(newValue);
       value = newValue;
       dep.notify();
-    }
+    },
   });
 }
 export { defineReactive, Observe as default };
