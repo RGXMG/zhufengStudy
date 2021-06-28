@@ -8,7 +8,7 @@ export default class History {
     this.onCurrentChange = null;
     this.current = createRoute(null, {
       matched: [],
-      path: "/"
+      path: "/",
     });
   }
 
@@ -50,7 +50,7 @@ export function createRoute(record, location) {
   let matched = [];
   let curRecord = record;
   // 从当前匹配项向上查找，然后反向推入
-  // 如当前匹配路径为： /about/a，则表示matched应为[{path: '/about'}, {path: '/a'}]
+  // 如当前匹配路径为： /about/a，则表示matched应为[{path: '/about'}, {path: '/about/a'}]
   // 这样在渲染时才能够保证从父元素依次渲染到子组件
   while (curRecord) {
     matched.unshift(curRecord);
@@ -58,6 +58,6 @@ export function createRoute(record, location) {
   }
   return {
     ...location,
-    matched
+    matched,
   };
 }
