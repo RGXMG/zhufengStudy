@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <HelloWorld />
+    <HelloWorld>
+      <template #name="{ name }" v-if="show"> {{ age }} {{ name }} </template>
+      <template #age="{ age }"> {{ age }}</template>
+    </HelloWorld>
+    <button @click="show = !show">点击</button>
     <div id="nav">12312321</div>
   </div>
 </template>
@@ -10,6 +14,15 @@ import HelloWorld from "./components/HelloWorld";
 export default {
   components: {
     HelloWorld,
+  },
+  data() {
+    return {
+      age: "33",
+      show: true,
+    };
+  },
+  updated() {
+    console.log("---");
   },
   mounted() {
     window._this = this;

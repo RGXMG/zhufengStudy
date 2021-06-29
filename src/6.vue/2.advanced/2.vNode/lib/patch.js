@@ -13,7 +13,7 @@ function createDomElementFormVnode(vnode) {
   if (type) {
     dom = document.createElement(type);
     // NOTE 递归render children
-    children.forEach(child => render(child, dom));
+    children.forEach((child) => render(child, dom));
   } else if (text) {
     dom = document.createTextNode(text);
   }
@@ -53,7 +53,7 @@ function updateDomProperties(vnode, oldProps = Object.create(null)) {
       if (typeof styles === "string") {
         domElement.style = styles;
       } else if (typeof styles === "object") {
-        Object.keys(styles).forEach(n => {
+        Object.keys(styles).forEach((n) => {
           domElement.style[n] = styles[n];
         });
       }
@@ -117,7 +117,10 @@ function createKeyToIndexMap(children) {
  * NOTE 更新子元素， 通过在新旧vnode元素头尾设置索引来进行比对，俩个新旧children中插入存在三种情况
  *   1. 尾部插入：从尾部开始进行比较，
  *   2. 头部插入：从头部开始进行比较
- *   3. 中间插入
+ *   3. 中间插入：1.newStart对比oldEnd元素开始\/(new在上，old在下)
+ *              2.oldStart元素对比newEnd元素/\(new在上，old在下)
+ *   4. 乱序插入：1.根据newStart元素的key开始找出old中对应的元素的放置在oldStart前面
+ *              2.根据newStart元素的key未在old中找到对应的元素，则根据newStart创建一个元素放置在oldStart前面
  * @param parent
  * @param oldChildren
  * @param newChildren
