@@ -89,20 +89,24 @@ function createComputedGetter(vm, key) {
         watcher.evaluate();
       }
       if (Dep.target) {
-        // 向computed属性自己的watcher实例上面添加当前使用该computed属性的watcher实例
-        // 即：当某个watcher(A)使用了该computed属性，因为computed本身就是个watcher(B)
-        // 所以当B变化时，应该通知A，所以在B上就需要建立dep去储存依赖B的A
-        // (如渲染watcher或者$options的watch或者computed的属性的watcher)
+        // 首先computed内部是依赖了data中的数据，在上面的watcher.evaluate中已经进行了computed的函数运算
+        // 在运算过程中，data中的数据已经将该computed的watcher加入到了自己的dep实例的sub(订阅)属性中，即自己变化便会通知computed的watcher执行
+        // 而computed这边的watcher也已经将该data数据的dep实例保存在了自己的watcher的dep属性中
+        // 当有其他的computed或者watch依赖于自己，便会通过下面这个方法watcher.depend()，遍历自己的watcher的dep属性(保存data的dep)，将依赖于自己的watcher加入到对应的data的sub订阅中
+        // 这样一来，当data变化后，会一次通知所有应该变化的watcher；而非一层一层的进行通知
         /**
          * export default {
          *   data() {
          *     return {
+         *       // 在defineReactive中会创建一个dep实例Q
          *       name: 'A'
          *     }
          *   },
          *   computed: {
          *     // 会创建一个watcherA
          *     getFullName() {
+         *       // 使用了this.name，即在dep实例Q中的sub属性保存了watcherA
+         *       // 然后watcherA的dep属性中保存了dep实例Q
          *       return this.name + 'B';
          *     },
          *     // 会创建一个watcherB
