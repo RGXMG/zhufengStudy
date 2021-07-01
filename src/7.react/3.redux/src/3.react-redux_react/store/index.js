@@ -14,7 +14,7 @@ const action = {
 
   // NOTE 异步action，使用thunk中间件
   onAsyncAdd() {
-    return dispatch => {
+    return (dispatch) => {
       setTimeout(() => {
         dispatch({ type: ADD_ACTION });
       }, 1000);
@@ -38,13 +38,13 @@ const action = {
         setTimeout(() => {
           res(10);
         }, 1000);
-      })
+      }),
     };
   },
 
   onReduce() {
     return { type: REDUCE_ACTION };
-  }
+  },
 };
 
 function reducer(state = { number: 0 }, { type, payload = 1 }) {
@@ -59,14 +59,14 @@ function reducer(state = { number: 0 }, { type, payload = 1 }) {
 }
 // const store = createStore(reducer);
 
-const logger1 = store => dispatch => action => {
+const logger1 = (store) => (next) => (action) => {
   console.log("旧值1：：：", store.getState());
-  dispatch(action);
+  next(action);
   console.log("新值1：：：", store.getState());
 };
-const logger2 = store => dispatch => action => {
+const logger2 = (store) => (next) => (action) => {
   console.log("旧值2：：：", store.getState());
-  dispatch(action);
+  next(action);
   console.log("新值2：：：", store.getState());
 };
 const store = applyMiddleware(

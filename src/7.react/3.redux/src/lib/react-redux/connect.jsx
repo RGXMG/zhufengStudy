@@ -7,9 +7,11 @@ import context from "./context";
  *  如一个组件connect了一部分store中的数据，而当store中其他数据反生变化之后，connect就会可以通过比较得出需不需要重新渲染，如PureComponent的浅比较
  * @param mapStateToProps
  * @param mapDispatchToProps
+ * @param mergeProps
+ * @param options
  */
-export default function(mapStateToProps, mapDispatchToProps) {
-  return WrapperComponent => {
+export default function (mapStateToProps, mapDispatchToProps, mergeProps, options) {
+  return (WrapperComponent) => {
     return class extends React.PureComponent {
       static contextType = context;
       constructor() {
@@ -18,13 +20,14 @@ export default function(mapStateToProps, mapDispatchToProps) {
         this.dispatchProps = {};
       }
       updateState() {
-        this.setState(mapStateToProps(this.context.getState()));
-      }
-      componentDidMount() {
+        this.setState(mapStateToProps(this.context.getState()), this.props);
         this.dispatchProps = bindActionCreators(
-          mapDispatchToProps(this.context.dispatch),
+          mapDispatchToProps(this.context.dispatch, this.props),
           this.context.dispatch
         );
+        this._props = mergeProps?.(this.props) || this.props;
+      }
+      componentDidMount() {
         this.updateState();
         this.unsubscrible = this.context.subscribe(this.updateState.bind(this));
       }
@@ -32,7 +35,7 @@ export default function(mapStateToProps, mapDispatchToProps) {
         this.unsubscrible();
       }
       render() {
-        return <WrapperComponent {...this.state} {...this.dispatchProps} />;
+        return <WrapperComponent {...this.state} {...this.dispatchProps} {...this._props} />;
       }
     };
   };

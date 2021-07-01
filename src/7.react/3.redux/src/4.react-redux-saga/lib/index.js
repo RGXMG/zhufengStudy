@@ -16,7 +16,9 @@ function createChannel() {
    * @param callback 其实就是co方法中的next函数，用来执行generator的下一次迭代
    */
   function subscribe(actionType, callback) {
-    observer[actionType] = observer[actionType] ? observer[actionType].concat(callback) : [callback];
+    observer[actionType] = observer[actionType]
+      ? observer[actionType].concat(callback)
+      : [callback];
   }
 
   /**
@@ -35,7 +37,7 @@ function createChannel() {
       // NOTE 【正确】先删除，在执行
       let nextArray = observer[action.type];
       delete observer[action.type];
-      nextArray.forEach(next => next(action));
+      nextArray.forEach((next) => next(action));
     }
   }
   return { subscribe, publish };
@@ -47,14 +49,14 @@ const channel = createChannel();
  */
 function createSagaMiddleware() {
   function middleware({ dispatch, getState }) {
-    return next => action => {
+    return (next) => (action) => {
       // 直接尝试发布该action，如果存在，则会自动执行callback
       channel.publish(action);
       next(action);
     };
   }
   // 添加一个run方法，用来执行rootSaga
-  middleware.run = function(generator) {
+  middleware.run = function (generator) {
     let ltr = generator();
     function next(action) {
       const { value, done } = ltr.next(action);
@@ -78,4 +80,40 @@ function createSagaMiddleware() {
     }
     next();
   };
+  return middleware;
 }
+
+// 使用redux-sage中间件
+// import { createStore, applyMiddleware } from 'redux'
+// import createSagaMiddleware from 'redux-saga'
+//
+// import reducer from './reducers'
+// import mySaga from './sagas'
+//
+// // create the saga middleware
+// const sagaMiddleware = createSagaMiddleware()
+// // mount it on the Store
+// const store = createStore(
+//   reducer,
+//   applyMiddleware(sagaMiddleware)
+// )
+//
+// // then run the saga
+// sagaMiddleware.run(mySaga)
+//
+// // render the application
+
+// 使用
+// import { takeEvery } from 'redux-saga/effects'
+//
+// // FETCH_USERS
+// function* fetchUsers(action) { ... }
+//
+// // CREATE_USER
+// function* createUser(action) { ... }
+//
+// // 同时使用它们
+// export default function* rootSaga() {
+//   yield takeEvery('FETCH_USERS', fetchUsers)
+//   yield takeEvery('CREATE_USER', createUser)
+// }

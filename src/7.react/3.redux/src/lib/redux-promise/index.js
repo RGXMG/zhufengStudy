@@ -6,7 +6,7 @@
  * @returns {function(*): function(...[*]=)}
  */
 function promiseMiddleware({ dispatch }) {
-  return next => action => {
+  return (next) => (action) => {
     // NOTE 1. 非纯对象，则判断是否为promise，是的话就添加then方法；
     if (!isPlainObject(action)) {
       return isPromise(action) ? action.then(dispatch) : next(action);
@@ -14,8 +14,8 @@ function promiseMiddleware({ dispatch }) {
     isPromise(action.payload)
       ? action.payload
           // 为对象时可能携带者更多的参数
-          .then(res => dispatch({ ...action, payload: res }))
-          .catch(error => {
+          .then((res) => dispatch({ ...action, payload: res }))
+          .catch((error) => {
             dispatch({ ...action, payload: error, error: true });
             return Promise.reject(error);
           })
@@ -29,6 +29,12 @@ function isPromise(fn) {
     typeof fn.then === "function"
   );
 }
+
+/**
+ * 判断是不是一个纯函数
+ * @param obj
+ * @returns {boolean}
+ */
 function isPlainObject(obj) {
   if (!obj) return false;
   let proto = obj;
