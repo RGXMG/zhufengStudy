@@ -10,16 +10,22 @@
  * @param fns
  * @returns {Function}
  */
-const compose = fns => {
-  const fn = Array.prototype.reduce.call(fns, (a, b) => (...args) =>
-    a(b(...args))
+const compose = (fns) => {
+  const fn = Array.prototype.reduce.call(
+    fns,
+    (a, b) =>
+      (...args) =>
+        a(b(...args))
   );
-  return suffix => {
+  return (suffix) => {
     if (!fns.length) return suffix;
     if (fns.length === 1) return fns[0](suffix);
     return fn(suffix);
   };
 };
+// abcd
+// ab: (...args) => a(b(...args)) &
+// &c: (...args) => ((...args) => a(b(...args)))(c(...args)) => 立即执行函数 => 变成 (...args) => a(b(c(...args))))
 
 export default compose;
 /**
@@ -39,25 +45,25 @@ export default compose;
 //     return fn(suffix);
 //   };
 // };
-// var logger1 = dispatch => action => {
-//   console.log("旧值1：：：", 1);
+// var logger1 = (dispatch) => (action) => {
+//   console.log("旧值1：：：", dispatch, action);
 //   dispatch(action);
 //   console.log("新值1：：：", 1);
 // };
-// var logger2 = dispatch => action => {
-//   console.log("旧值2：：：", 1);
+// var logger2 = (dispatch) => (action) => {
+//   console.log("旧值2：：：", dispatch, action);
 //   dispatch(action);
 //   console.log("新值2：：：", 1);
 // };
-// var logger3 = dispatch => action => {
-//   console.log("旧值3：：：", 1);
+// var logger3 = (dispatch) => (action) => {
+//   console.log("旧值3：：：", dispatch, action);
 //   // dispatch(action);
 //   console.log("新值3：：：", 1);
 // };
-// console.log(
-//   compose(
-//     logger1,
-//     logger2,
-//     logger3
-//   )("xmg")()
-// );
+// console.log(compose([logger1, logger2, logger3])("xmg")());
+// 旧值1：：： [Function] undefined
+// 旧值2：：： [Function] undefined
+// 旧值3：：： xmg undefined
+// 新值3：：： 1
+// 新值2：：： 1
+// 新值1：：： 1
