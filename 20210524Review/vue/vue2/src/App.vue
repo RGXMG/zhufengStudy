@@ -5,7 +5,7 @@
       <template #age="{ age }"> {{ age }}</template>
     </HelloWorld>
     <button @click="show = !show">点击</button>
-    <div id="nav">12312321</div>
+    <div id="nav">133312321</div>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      age: "33",
+      age: "333",
       show: true,
     };
   },

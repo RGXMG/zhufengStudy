@@ -2,21 +2,21 @@
  * 内部有个事件流 tapable 1.0
  */
 
-const path = require('path');
-const htmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
-const copyWebpackPlugin = require('copy-webpack-plugin');
-const cleanWebpackPlugin = require('clean-webpack-plugin');
+const path = require("path");
+const htmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
+const copyWebpackPlugin = require("copy-webpack-plugin");
+const cleanWebpackPlugin = require("clean-webpack-plugin");
 /**
  * miniCssExtractPlugin可以将页面的中的css文件单独提取出来，不让其打包到bundle.js中
  * 1. 利用缓存使用公共css
  * 2. 利用浏览器的并行加载，缩小加载时间
  */
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   // 入口、相对路径
   // 1. string，一个入口文件
-  entry: './src/index.js',
+  entry: "./src/index.js",
 
   // 2. 可以多个入口文件，数组配置，该配置还是会打包成一个输出文件
   // entry: ['./src/index.js', './src/base.js'],
@@ -30,17 +30,15 @@ module.exports = {
   //   base: './src/base.js',
   // },
 
-
   // 出口
   output: {
     // 绝对路径
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, "dist"),
     // 打包后的文件名
     // [name]就是entry的名字
     // hash文件摘要，根据文件内容计算，默认很长，20位，:8就是代表8位
-    filename: '[name].[hash:8].js'
+    filename: "[name].[hash:8].js",
   },
-
 
   // 监听原文件的变化，当源文件改变后，则重新打包
   watch: true,
@@ -50,31 +48,27 @@ module.exports = {
     // 每秒轮询的次数
     poll: 1000,
     // 每次修改停止之后间隔时间才会编译(毫秒)，类似于防抖
-    aggregateTimeout: 500
+    aggregateTimeout: 500,
   },
-
-
 
   // 开发选项，可以设置如何处理编译的源码
   // 各种格式 https://www.webpackjs.com/configuration/devtool/#devtool
   // 下面只是列举几个
-  devtool: 'source-map', // 单独放置，打包慢，能准确定位
+  devtool: "source-map", // 单独放置，打包慢，能准确定位
   // devtool: 'inline-cheap-source-map', // 不单独放置，①base64编码格式追加到js文件末尾，只能定位到哪一行源码出错，打包快
   // devtool: 'cheap-module-source-map', // 单独文件，打包速度一般，只能定位到哪一行出错
-
 
   // 负责引入模块的时候，比如modules模块的寻址根路径，alias文件名依赖，extensions文件扩展名
   resolve: {
     // 模块的寻找根目录，当引入一个绝对路径的模块时，就会从下面的路径进行查找，默认是node_modules
     // 比如自己有个lib文件夹，里面全是库，引入的时候不需要使用相对路径，而直接可以使用绝对路径
-    modules: ['node_modules', 'lib'],
+    modules: ["node_modules", "lib"],
     // 引入文件的后缀，如引入./base，其中base为base.jsx，那么如果配置了extensions，则不需要在添加上后缀
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
     // 引用一个库时/文件夹时，会首先找寻package.json中的字段中的入口文件，一般是main字段，
     // 下面的意思就是说首先找寻main字段，如果没有则找寻node，这样依次找寻
-    mainFields: ['main', 'node', 'browser'],
+    mainFields: ["main", "node", "browser"],
   },
-
 
   /**
    * loader可以配置在下方，也可以直接写在代码中的
@@ -120,22 +114,60 @@ module.exports = {
     // 不需要递归解析的文件，适用于排除那些已经编译过得文件，如*.min.js
     noParse: [/.+\.min\.js/],
     // 规则处理
+    /**
+     *
+     * 1. webpack原本的loader是将每个文件都过一遍:
+     * 比如有一个js文件 rules中有10个loader，
+     * 第一个是处理js文件的loader，当第一个loader处理完成后webpack不会自动跳出，而是会继续拿着这个js文件去尝试匹配剩下的9个loader，相当于没有break。
+     * 而oneOf就相当于这个break;
+     * rules: [
+     *   oneOf:[
+     *     {
+     *        test:/\.css$/,
+     *        use:[...common_css_loader]
+     *     },
+     *     {
+     *        test:/\.less$/,
+     *        use:[...common_css_loader,'less-loader']
+     *     },
+     *     {
+     *        test:/\.html/,
+     *        loader:'html-loader'
+     *     }
+     *   ]
+     * ]
+     *
+     * 2. loader的执行顺序是从下往上的，但是有时候我们想先执行某个loader 就要把它移到最后边这样非常的不方便
+     * enforce的作用是设置loader的优先级
+     * enforce有以下几个配置项
+     * pre 优先处理
+     * normal 正常处理（默认）
+     * inline 其次处理
+     * post 最后处理
+     * 执行loader的时候会根据enforce的配置来安排顺序，如果设置了pre则会优先执行
+     * {
+     *   test:/\.js$/,
+     *   exclude:/node_modules/,
+     *   loader:'eslint-loader'，
+     *   enforce:'pre'
+     * }
+     */
     rules: [
       {
         test: /.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
-        }
+          loader: "babel-loader",
+        },
       },
       {
         test: /.less$/,
         // 使用miniCSSExtraPlugin将css-loader处理之后的css单独打包
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
+        use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
       },
       {
         test: /.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         // 正则匹配去匹配css文件
@@ -144,12 +176,16 @@ module.exports = {
         // 多个话使用数组，执行顺序从右到左
         // css-loader解析处理css文件中的url路径，把css文件处理为一个模块
         // style-loader可以把css文件变成style标签插入head中
-        loader: [MiniCssExtractPlugin.loader, 'css-loader', {
-          loader: 'postcss-loader',
-          options: {
-            plugins: () => [require('postcss-preset-env')]
-          }
-        }]
+        loader: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              plugins: () => [require("postcss-preset-env")],
+            },
+          },
+        ],
       },
       /**
        * 处理在html模板中的img图片
@@ -157,7 +193,7 @@ module.exports = {
        */
       {
         test: /\.(html|htm)/,
-        use: 'html-withimg-loader'
+        use: "html-withimg-loader",
       },
       /**
        * url-loader
@@ -167,7 +203,7 @@ module.exports = {
       {
         test: /\.(png|jpg|jpeg|gif|svg|bml)$/,
         use: {
-          loader: 'url-loader',
+          loader: "url-loader",
           options: {
             // 200KB 以内都转为base64
             limit: 10 * 1024,
@@ -176,11 +212,11 @@ module.exports = {
             // file-loader新版本默认就是采用esModule加载
             // 所以如果使用require的话，则需要配置esModule为false即可
             esModule: false,
-            name: 'assets/[name].[hash:7].[ext]',
+            name: "assets/[name].[hash:7].[ext]",
             // 指定输出所有目录
-            outputPath: ''
-          }
-        }
+            outputPath: "",
+          },
+        },
       },
       // file-loader是处理二进制数据，如文件，它会把文件从源位置复制到目标地址并修改引用地址
       {
@@ -188,36 +224,35 @@ module.exports = {
         // use: {
         //   loader: 'file-loader',
         //   options: {
-            // file-loader的options
-            // file-loader新版本默认就是采用esModule加载
-            // 所以如果使用require的话，则需要配置esModule为false即可
-            // esModule: false,
-            // name: '[name].[hash:7].[ext]',
-            // 指定输出所有目录
-            // outputPath: 'assets/'
-          // }
+        // file-loader的options
+        // file-loader新版本默认就是采用esModule加载
+        // 所以如果使用require的话，则需要配置esModule为false即可
+        // esModule: false,
+        // name: '[name].[hash:7].[ext]',
+        // 指定输出所有目录
+        // outputPath: 'assets/'
+        // }
         // }
       },
       // {
       //   test: require.resolve('jquery), // require.resolve拿到一个模块的绝对路径，引入在代码中导入的时候是一个绝对路径
       //   loader: 'expose-loader?$'
       // },
-    ]
+    ],
   },
-
 
   // plugins 放置顺序与执行顺序无关，都是监听事件
   plugins: [
     new copyWebpackPlugin([
       {
-        from: './public',
-        to: './dist',
-        ignore: ['html'],
-      }
+        from: "./public",
+        to: "./dist",
+        ignore: ["html"],
+      },
     ]),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].[hash:8].css',
-      chunkFilename: '[id].css',
+      filename: "css/[name].[hash:8].css",
+      chunkFilename: "[id].css",
     }),
     // 用来自动向模块内容注入变量
     // 该插件解决在代码中不想频繁引入(import/require)其他模块(如A)，而直接使用A模块时
@@ -234,18 +269,18 @@ module.exports = {
     // 引入的资源文件加hash避免缓存
     new htmlWebpackPlugin({
       minify: {
-        removeAttributeQuotes: true
+        removeAttributeQuotes: true,
       },
       // 模板
-      template: './public/index.html',
+      template: "./public/index.html",
       // 产出得文件名称
-      filename: 'index.html',
+      filename: "index.html",
       // 选择在产出的chunk中引入哪些文件
       // 跟entry对象的文件名称
       // chunk: ['index'],
       // 向每个资源文件加入查询参数，hash，避免缓存
       hash: true,
-      title: '欢迎光临',
+      title: "欢迎光临",
     }),
 
     // 多页面html产出配置
@@ -271,13 +306,11 @@ module.exports = {
     // root目录，devServer或依托该文件夹作为静态文件目录
     // 但是产出的文件不会放在该目录下，你可以手动添加文件到该目录下
     // 也是可以访问的
-    contentBase: './dist',
-    host: 'localhost',
+    contentBase: "./dist",
+    host: "localhost",
     // 默认8080
     port: 8080,
     // 服务器返回给浏览器的时候是否启动gzip压缩
     compress: true,
-
-
-  }
+  },
 };
