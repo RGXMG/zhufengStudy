@@ -14,14 +14,14 @@ const { SyncWaterfallHook } = require("tapable");
 // 注册一个SyncHook事件，并且定义接受的参数
 const queue = new SyncWaterfallHook(["name"]);
 // 监听该事件，处理函数的个数为注册事件时参数个数 { '0': 'lpl', '1': undefined }
-queue.tap("1", function(name) {
+queue.tap("1", function (name) {
   console.log(1, name, arguments); // arguments为
   return name + "1";
 });
-queue.tap("2", function(name) {
+queue.tap("2", function (name) {
   console.log(2, name);
 });
-queue.tap("3", function(name) {
+queue.tap("3", function (name) {
   console.log(3, name);
 });
 // call表示触发该事件，然后传入参数

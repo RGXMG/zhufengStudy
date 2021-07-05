@@ -2,8 +2,8 @@ const path = require("path");
 const webpack = require("webpack");
 // const manifest = require('./dist/manifest');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WebpackDeepScopeAnalysisPlugin = require("webpack-deep-scope-plugin")
-  .default;
+const WebpackDeepScopeAnalysisPlugin =
+  require("webpack-deep-scope-plugin").default;
 const WebpackParalleUglifyPlugin = require("webpack-parallel-uglify-plugin");
 const cleanWebpackPlugin = require("clean-webpack-plugin");
 
@@ -17,25 +17,25 @@ module.exports = {
   // entry: ['./src/index.jsx'],
 
   // 测试tree-shaking
-  entry: ["./src/2.tree_shaking/index.js"],
+  // entry: ["./src/2.tree_shaking/index.js"],
 
   // 测试hot-module-reload(HMR)
   // entry: ['./src/1.hot_module_reload(HMR)/index.js'],
 
   // 测试代码分割 optimization splitChunks
   // 当chunks为initial时，从入口文件分割
-  // entry: {
-  //   pageA: './src/3.optimization_split_chunks/a.page.js',
-  //   pageB: './src/3.optimization_split_chunks/b.page.js',
-  //   pageC: './src/3.optimization_split_chunks/c.page.js'
-  // },
+  entry: {
+    pageA: "./src/3.optimization_split_chunks/a.page.js",
+    pageB: "./src/3.optimization_split_chunks/b.page.js",
+    pageC: "./src/3.optimization_split_chunks/c.page.js",
+  },
 
   // import 动态加载
   // entry: './src/4.webpack_dynamic/index.js',
 
   output: {
     path: path.join(__dirname, "dist_dynamic"),
-    filename: "[name].[contentHash:8].js"
+    filename: "[name].[contentHash:8].js",
   },
 
   /**
@@ -91,7 +91,7 @@ module.exports = {
           */
           // priority: -10,
           // 分割后的文件名（默认是：组名~入口名.js，即verdors~main.js）
-          filename: "vendors.js"
+          filename: "vendors.js",
           // 强制分隔，无视minChunks、maxAsyncRequests等选项，默认false
           // enforce: false
         },
@@ -101,16 +101,16 @@ module.exports = {
           minChunks: 2, // 默认
           priority: -20, // 默认
           filename: "commons.js",
-          minSize: 0
+          minSize: 0,
           /*
             复用已存在的chunk,
             比如index.js里引入axios和test.js
             test里也引入了axios，那么axios就会被复用
           */
           // reuseExistingChunk: true
-        }
-      }
-    }
+        },
+      },
+    },
   },
 
   // devtool: 'source-map',
@@ -123,12 +123,12 @@ module.exports = {
         use: [
           {
             loader: "thread-loader",
-            options: {}
+            options: {},
           },
-          "babel-loader"
-        ]
-      }
-    ]
+          "babel-loader",
+        ],
+      },
+    ],
   },
 
   devServer: {
@@ -138,7 +138,7 @@ module.exports = {
     // 默认就是inline
     inline: true,
     // 热加载
-    hot: true
+    hot: true,
     // watcherOptions: {
     //   ignored: /node_modules/,
     //   aggregateTimeout: 500
@@ -146,7 +146,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"]
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
 
   plugins: [
@@ -172,7 +172,7 @@ module.exports = {
 
     // 定义运行时的环境变量
     new webpack.DefinePlugin({
-      __development__: process.env.env
+      __development__: process.env.env,
     }),
 
     // 根据manifest文件引入已经打包的DLL文件
@@ -188,8 +188,8 @@ module.exports = {
       hash: true,
       title: "REACT",
       minify: {
-        removeAttributeQuotes: true
-      }
-    })
-  ]
+        removeAttributeQuotes: true,
+      },
+    }),
+  ],
 };
