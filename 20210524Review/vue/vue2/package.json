@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint",
     "inspect": "vue inspect --mode production > ./webpack.out.js"
   },
+  "sideEffects": true,
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^2.6.11",

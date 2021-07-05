@@ -63,7 +63,7 @@ class Count extends React.Component<TP, { count: number; initCount: number }> {
 function App() {
   const [count, setCount] = useState<number>(7);
   useEffect(() => {
-    console.log("we423432");
+    console.log("33333");
   }, []);
   return (
     <div className="App">

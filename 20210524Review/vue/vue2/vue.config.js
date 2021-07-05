@@ -28,8 +28,8 @@ const prodExternals = {
 
 module.exports = {
   configureWebpack(config) {
-    config.optimization.minimizer = [];
-    config.devtool = "none";
+    // config.optimization.minimizer = [];
+    // config.devtool = "none";
     isPro() && (config.externals = prodExternals);
   },
   chainWebpack(config) {
