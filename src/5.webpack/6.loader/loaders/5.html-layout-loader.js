@@ -17,7 +17,7 @@ module.exports = function (source) {
    * @param path
    * @param sync
    * @returns {Promise<unknown>}
-   */
+   */ 
   const reader = (path) => {
     return new Promise((res, rej) => {
       this.resolve(this.context, path, (err, url) => {
