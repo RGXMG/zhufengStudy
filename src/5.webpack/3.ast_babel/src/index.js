@@ -1,8 +1,8 @@
-// 将源码转为ast
+// 将源码转为ast es噗瑞玛
 const esprima = require("esprima");
-// 便利更新ast 洋葱模型
+// 便利更新ast 洋葱模型 es踹窝儿死
 const estraverse = require("estraverse");
-// 将ast重新生成源码
+// 将ast重新生成源码 es扣得跟
 const escodegen = require("escodegen");
 let code = "function ast(){}";
 let ast = esprima.parse(code);
@@ -18,6 +18,6 @@ estraverse.traverse(ast, {
     if (node.type === "Identifier") {
       node.name += "_leave";
     }
-  }
+  },
 });
 console.log(escodegen.generate(ast));

@@ -166,6 +166,7 @@ class Compiler {
       };
       const strToLoader = loader =>
         loader.split("!").forEach(i => handleLoader({ loader: i }));
+
       for (const rule of rules) {
         if (rule.test.test(modulePath)) {
           const { loader, use } = rule;
