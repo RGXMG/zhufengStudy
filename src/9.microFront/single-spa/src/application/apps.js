@@ -16,7 +16,7 @@ import {
   shouldBeAcitive,
   isActive,
   isntActive,
-  isLoaded
+  isLoaded,
 } from "./apps.helper";
 import { reroute } from "../navigations/invoke";
 
@@ -30,7 +30,6 @@ const APPS = [];
  * @param customProps {Object} 自定义的配置信息
  */
 function registerApplication(appName, loadFunction, activityWhen, customProps) {
-  debugger;
   // 判断值是否合法 省略
   // 归档当前App
   APPS.push({
@@ -38,7 +37,7 @@ function registerApplication(appName, loadFunction, activityWhen, customProps) {
     activityWhen,
     loadFunction,
     customProps,
-    status: NOT_LOADED
+    status: NOT_LOADED,
   });
 
   // 执行循环
@@ -68,9 +67,7 @@ function getAppsToLoad() {
  * 3. 不应该再被激活了
  */
 function getAppsToUnmount() {
-  return APPS.filter(notSkip)
-    .filter(isActive)
-    .filter(shouldntBeActive);
+  return APPS.filter(notSkip).filter(isActive).filter(shouldntBeActive);
 }
 
 /**
@@ -98,5 +95,5 @@ export {
   getMountedApps,
   getAppsToUnmount,
   getAppsToMount,
-  registerApplication
+  registerApplication,
 };

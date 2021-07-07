@@ -10,56 +10,83 @@
     <h1><a href="#/index">INDEX</a></h1>
     <div id="app"></div>
     <script>
-      (global => {
+      ((global) => {
         global.mySingleSpa.registerApplication(
-          "AppA",
-          props => {
+          "HomeApp",
+          (props) => {
             console.log(props);
             return new Promise((res, rej) => {
               setTimeout(() => {
                 res({
                   async bootstrap(props) {
-                    console.log("AppA bootstrap", props);
+                    console.log("HomeApp bootstrap", props);
                   },
                   async mount(props) {
-                    document.getElementById("app").innerHTML = "Home信息页面";
-                    console.log("AppA mount", props);
+                    document.getElementById("app").innerHTML = "Home家园页面";
+                    console.log("HomeApp mount", props);
                   },
                   async unmount(props) {
                     document.getElementById("app").innerHTML = "";
-                    console.log("AppA unmount", props);
-                  }
+                    console.log("HomeApp unmount", props);
+                  },
                 });
               }, 2000);
             });
           },
-          location => location.hash === "/home",
-          { type: "services" }
+          (location) => location.hash === "#/home",
+          { type: "HomeApp" }
         );
         global.mySingleSpa.registerApplication(
-          "AppB",
-          props => {
+          "DefaultApp",
+          (props) => {
             console.log(props);
             return new Promise((res, rej) => {
               setTimeout(() => {
                 res({
                   async bootstrap(props) {
-                    console.log("AppA bootstrap", props);
+                    console.log("DefaultApp bootstrap", props);
                   },
                   async mount(props) {
-                    document.getElementById("app").innerHTML = "首页信息";
-                    console.log("AppA mount", props);
+                    document.getElementById("app").innerHTML =
+                      "DefaultApp已挂载";
+                    console.log("DefaultApp mount", props);
                   },
                   async unmount(props) {
                     document.getElementById("app").innerHTML = "";
-                    console.log("AppA unmount", props);
-                  }
+                    console.log("DefaultApp unmount", props);
+                  },
                 });
               }, 2000);
             });
           },
-          location => location.hash === "",
-          { type: "services" }
+          (location) => location.hash === "",
+          { type: "DefaultApp" }
+        );
+        global.mySingleSpa.registerApplication(
+          "IndexApp",
+          (props) => {
+            console.log(props);
+            return new Promise((res, rej) => {
+              setTimeout(() => {
+                res({
+                  async bootstrap(props) {
+                    console.log("IndexApp bootstrap", props);
+                  },
+                  async mount(props) {
+                    document.getElementById("app").innerHTML =
+                      "Index首页信息页面";
+                    console.log("IndexApp mount", props);
+                  },
+                  async unmount(props) {
+                    document.getElementById("app").innerHTML = "";
+                    console.log("IndexApp unmount", props);
+                  },
+                });
+              }, 2000);
+            });
+          },
+          (location) => location.hash === "#/index",
+          { type: "IndexApp" }
         );
         global.mySingleSpa.start();
       })(window);

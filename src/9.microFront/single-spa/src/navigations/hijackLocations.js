@@ -11,7 +11,7 @@ import { reroute } from "./invoke";
 const HIJACK_EVENTS_NAME = /^(hashchange|popstate)$/;
 const EVENTS_POOL = {
   hashchange: [],
-  popstate: []
+  popstate: [],
 };
 function urlReroute() {
   reroute([], arguments);
@@ -27,7 +27,7 @@ const originalAddEventListener = window.addEventListener;
 const originalRemoveEventListener = window.removeEventListener;
 
 // 重写addEventListener
-window.addEventListener = function(eventName, handler) {
+window.addEventListener = function (eventName, handler) {
   if (eventName && HIJACK_EVENTS_NAME.test(eventName)) {
     !EVENTS_POOL[eventName].includes(handler) &&
       EVENTS_POOL[eventName].push(handler);
@@ -36,11 +36,11 @@ window.addEventListener = function(eventName, handler) {
   }
 };
 // 重写removeEventListener
-window.removeEventListener = function(eventName, handler) {
+window.removeEventListener = function (eventName, handler) {
   if (eventName && HIJACK_EVENTS_NAME.test(eventName)) {
     EVENTS_POOL[eventName].includes(handler) &&
       (EVENTS_POOL[eventName] = EVENTS_POOL[eventName].filter(
-        i => i !== handler
+        (i) => i !== handler
       ));
   } else {
     originalRemoveEventListener.apply(this, arguments);
@@ -61,12 +61,12 @@ function mockPopStateEvent(state) {
 const originalPushState = window.history.pushState;
 const originalReplaceState = window.history.replaceState;
 // 重写pushState方法
-window.history.pushState = function(state, title, url) {
+window.history.pushState = function (state, title, url) {
   const result = originalPushState.apply(this, arguments);
   reroute(mockPopStateEvent(state));
   return result;
 };
-window.history.replaceState = function(state, title, url) {
+window.history.replaceState = function (state, title, url) {
   const result = originalReplaceState.apply(this, arguments);
   reroute(mockPopStateEvent(state));
   return result;
@@ -84,6 +84,6 @@ export function callCaptureEvents(eventsArgs) {
     eventsArgs = [eventsArgs];
   }
   if (EVENTS_POOL[eventsArgs.type] && EVENTS_POOL[eventsArgs.type].length) {
-    EVENTS_POOL[eventsArgs].forEach(i => i.apply(this, eventsArgs));
+    EVENTS_POOL[eventsArgs].forEach((i) => i.apply(this, eventsArgs));
   }
 }

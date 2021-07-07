@@ -11,7 +11,7 @@ import {
   getAppsToLoad,
   getAppsToMount,
   getAppsToUnmount,
-  getMountedApps
+  getMountedApps,
 } from "../application/apps";
 import { toLoadPromise } from "../lifecycles/load";
 import { toUnmountPromise } from "../lifecycles/unmount";
@@ -32,17 +32,16 @@ let changesQueue = [];
  * @param eventArgs {Event} Event事件，主要是路由的改变的事件 popstate/pushState/replaceState
  */
 export function reroute(pendings = [], eventArgs) {
-  // 应用正在切换，这个状态会在执行performAppChanges之前置为true，执行结束之后再置为false
-  // 如果在中间用户重新切换路由了，即走这个if分支，暂时看起来就在数组中存储了一些信息，没看到有什么用
-  // 字面意思理解就是用户等待app切换
-  // 处于循环中，需要将本地reroute添加到queue中
-  // 待调用finish之后，再次进行下一次循环
+  // 当程序需要切换app时，就会将该变量置为true
+  // 这样在处理正在卸载某些app时，如果路由又发生了变化，发生了某些事件，我们需要缓存这些事件
+  // 避免直接触发这些事件，否则可能会导致本应该被卸载的app监听到了事件作出相应(找不到路由404等等)
+  // 待我们卸载完成之后，就需要遍历changesQueue该队列进行通知
   if (appChangesUnderway) {
     return new Promise((resolve, reject) => {
       changesQueue.push({
         success: resolve,
         failure: reject,
-        eventArgs
+        eventArgs,
       });
     });
   }
@@ -61,32 +60,50 @@ export function reroute(pendings = [], eventArgs) {
    * 3. 去mount app
    */
   function preformAppChanges() {
+    // https://github.com/single-spa/single-spa/issues/545
+    // 自定义事件，在应用状态发生改变之前可触发，给用户提供搞事情的机会
+    // window.dispatchEvent(
+    //   new CustomEvent(
+    //     appsThatChanged.length === 0
+    //       ? "single-spa:before-no-app-change"
+    //       : "single-spa:before-app-change",
+    //     getCustomEventDetail(true)
+    //   )
+    // );
+    //
+    // window.dispatchEvent(
+    //   new CustomEvent(
+    //     "single-spa:before-routing-event",
+    //     getCustomEventDetail(true)
+    //   )
+    // );
+
     // 拿到需要被卸载的APP进行卸载处理
     let unmountPromise = getAppsToUnmount().map(toUnmountPromise);
     unmountPromise = Promise.all(unmountPromise);
 
-    // 拿到需要被加载的APP进行加载并且启动
-    let loadApps = getAppsToLoad().map(app =>
+    // 拿到已经成功加载过源码，但是还并未启动过的app
+    // 即加载过源码，但是还并未执行过任何生命周期函数的app
+    // 然后进行启动、挂载操作
+    let loadApps = getAppsToLoad().map((app) =>
       toLoadPromise(app)
         .then(toBootstrapPromise)
-        .then(app => {
-          debugger;
+        .then((app) => {
           toMountPromise(app);
         })
     );
 
     // 拿到需要被挂载的APP进行挂载
     // 合并load以及mount
-    let mountApps = getAppsToMount().filter(app =>
+    let mountApps = getAppsToMount().filter((app) =>
       loadApps.length
-        ? Boolean(loadApps.find(item => item.name === app.name))
+        ? Boolean(loadApps.find((item) => item.name === app.name))
         : true
     );
     mountApps = Promise.all(
-      loadApps.concat(mountApps).map(app => {
+      loadApps.concat(mountApps).map((app) => {
         const res = toBootstrapPromise(app);
-        res.then(app => {
-          debugger;
+        res.then((app) => {
           toMountPromise(app);
         });
       })
@@ -99,13 +116,13 @@ export function reroute(pendings = [], eventArgs) {
           () => {
             return finish();
           },
-          e => {
-            pendings.forEach(item => item.failure(e));
+          (e) => {
+            pendings.forEach((item) => item.failure(e));
             throw e;
           }
         );
       },
-      e => {
+      (e) => {
         calAllLocationEvents();
         console.error(e);
       }
@@ -122,7 +139,7 @@ export function reroute(pendings = [], eventArgs) {
   function finish() {
     const returnValue = getMountedApps();
     if (pendings.length) {
-      pendings.forEach(item => item.success(returnValue));
+      pendings.forEach((item) => item.success(returnValue));
     }
     appChangesUnderway = false;
     if (changesQueue.length) {
@@ -138,12 +155,11 @@ export function reroute(pendings = [], eventArgs) {
    */
   function loadApps() {
     const canAndNeedLoaded = getAppsToLoad();
-    debugger;
     return Promise.all(canAndNeedLoaded.map(toLoadPromise))
       .then(() => {
         return finish();
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
       });
   }
@@ -152,9 +168,9 @@ export function reroute(pendings = [], eventArgs) {
     // eventsQueue有值，则表示是路由改变了
     let eventArgsArr = [];
     if (
-      (eventArgsArr = (pendings || []).filter(item => item.eventArgs)).length
+      (eventArgsArr = (pendings || []).filter((item) => item.eventArgs)).length
     ) {
-      eventArgsArr.forEach(event => callCaptureEvents(event));
+      eventArgsArr.forEach((event) => callCaptureEvents(event));
     } else {
       eventArgs && callCaptureEvents(eventArgs[0]);
     }

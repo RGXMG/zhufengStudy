@@ -10,7 +10,7 @@ import {
   BOOTSTRAPPING,
   NOT_BOOTSTRAPPED,
   NOT_MOUNTED,
-  SKIP_BECAUSE_BROKEN
+  SKIP_BECAUSE_BROKEN,
 } from "../application/apps.helper";
 import { reasonableTime } from "../application/timeout";
 import { getProps } from "./helper";
@@ -32,12 +32,10 @@ function toBootstrapPromise(app) {
     app.timeouts.bootstrap
   )
     .then(() => {
-      debugger;
       app.status = NOT_MOUNTED;
       return app;
     })
-    .catch(e => {
-      debugger;
+    .catch((e) => {
       app.status = SKIP_BECAUSE_BROKEN;
       console.error(e);
       return app;
