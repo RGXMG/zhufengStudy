@@ -21,7 +21,9 @@ import { getProps } from "./helper";
  */
 function toBootstrapPromise(app) {
   if (app.status !== NOT_BOOTSTRAPPED) {
-    return Promise.resolve(app);
+    return Promise.resolve(app).then((app) => {
+      return app;
+    });
   }
   app.status = BOOTSTRAPPING;
 

@@ -89,7 +89,7 @@ export function reroute(pendings = [], eventArgs) {
       toLoadPromise(app)
         .then(toBootstrapPromise)
         .then((app) => {
-          toMountPromise(app);
+          return toMountPromise(app);
         })
     );
 
@@ -104,7 +104,7 @@ export function reroute(pendings = [], eventArgs) {
       loadApps.concat(mountApps).map((app) => {
         const res = toBootstrapPromise(app);
         res.then((app) => {
-          toMountPromise(app);
+          return toMountPromise(app);
         });
       })
     );

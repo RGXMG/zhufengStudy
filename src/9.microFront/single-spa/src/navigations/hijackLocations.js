@@ -6,7 +6,7 @@
  * Time: 18:50
  *
  */
-import { reroute } from "./invoke";
+import { reroute } from "./reroute";
 
 const HIJACK_EVENTS_NAME = /^(hashchange|popstate)$/;
 const EVENTS_POOL = {
@@ -17,10 +17,18 @@ function urlReroute() {
   reroute([], arguments);
 }
 
+let oldHref = window.location.href;
+
 // 拦截hashchange以及popstate事件
 // 保证微前端的俩个事件第一个被处理
-window.addEventListener("hashchange", urlReroute);
-window.addEventListener("popstate", urlReroute);
+window.addEventListener("hashchange", function (e) {
+  console.log("urlReroute:::", arguments);
+  urlReroute(e);
+});
+window.addEventListener("popstate", function (e) {
+  console.log("popstate:::", arguments);
+  urlReroute(e);
+});
 
 // 缓存原生事件
 const originalAddEventListener = window.addEventListener;

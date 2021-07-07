@@ -6,7 +6,7 @@
  * Time: 11:03
  *
  */
-import { reroute } from "./navigations/invoke";
+import { reroute } from "./navigations/reroute";
 
 let started = false;
 export function start() {

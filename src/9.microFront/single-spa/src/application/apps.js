@@ -18,7 +18,7 @@ import {
   isntActive,
   isLoaded,
 } from "./apps.helper";
-import { reroute } from "../navigations/invoke";
+import { reroute } from "../navigations/reroute";
 
 // 保存所有的APP
 const APPS = [];

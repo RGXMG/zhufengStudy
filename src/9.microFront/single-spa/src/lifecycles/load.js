@@ -11,7 +11,7 @@ import {
   LOAD_RESOURCE_CODE,
   NOT_BOOTSTRAPPED,
   NOT_LOADED,
-  SKIP_BECAUSE_BROKEN
+  SKIP_BECAUSE_BROKEN,
 } from "../application/apps.helper";
 import { smellLikeAPromise, flattenLifecycleArray, getProps } from "./helper";
 import { ensureAppTimeouts } from "../application/timeout";
@@ -32,11 +32,12 @@ import { ensureAppTimeouts } from "../application/timeout";
  * 1. 校验和处理App的生命周期函数
  * 2. 处理生命周期函数的超时逻辑
  * @param app
- * @returns {Promise<never>|Promise<any>}
  */
 export function toLoadPromise(app) {
   if (app.status !== NOT_LOADED) {
-    return Promise.resolve(app);
+    return Promise.resolve(app).then((app) => {
+      return app;
+    });
   }
 
   // 设置当前App的状态为加载代码中
@@ -56,13 +57,13 @@ export function toLoadPromise(app) {
   // 生命周期的超时处理
   // 设置LOAD_ERROR的处理
   return loadPromise
-    .then(appConfig => {
+    .then((appConfig) => {
       if (appConfig && typeof appConfig !== "object") {
         throw new Error("");
       }
       // 验证生命周期 bootsrap mout unmout
       let errors = [];
-      ["bootstrap", "mount", "unmount"].forEach(lifecycle => {
+      ["bootstrap", "mount", "unmount"].forEach((lifecycle) => {
         if (!appConfig[lifecycle]) {
           errors.push(`${lifecycle} not existed！`);
         }
@@ -94,7 +95,7 @@ export function toLoadPromise(app) {
 
       return app;
     })
-    .catch(e => {
+    .catch((e) => {
       app.status = LOAD_ERROR;
       console.log(e);
       return app;
