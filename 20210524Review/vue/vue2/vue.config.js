@@ -28,9 +28,9 @@ const prodExternals = {
 
 module.exports = {
   configureWebpack(config) {
-    // config.optimization.minimizer = [];
-    // config.devtool = "none";
-    isPro() && (config.externals = prodExternals);
+    config.optimization.minimizer = [];
+    config.devtool = "none";
+    // isPro() && (config.externals = prodExternals);
   },
   chainWebpack(config) {
     config.plugin("html").tap((arg) => {
