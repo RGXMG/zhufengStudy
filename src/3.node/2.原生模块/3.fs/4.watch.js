@@ -2,7 +2,7 @@
  * 监控文件变化，当文化发生变化时执行对应回调
  * NOTE 存在开源框架node-watch、chokidar
  */
-const fs = require('fs');
+const fs = require("fs");
 
 /**
  * fs.watch
@@ -21,7 +21,7 @@ const fs = require('fs');
  * NOTE 当文件发生变化时，会触发俩次等问题，解决办法参考http://xxdy.tech/2019/04/16/watchfile/
  */
 
-fs.watch('./4.watch.txt', (et, filename) => {
+fs.watch("./4.watch.txt", (et, filename) => {
   console.log(et);
   console.log(filename);
 });

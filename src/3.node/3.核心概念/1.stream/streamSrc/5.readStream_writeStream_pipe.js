@@ -1,11 +1,11 @@
-const ReadStream = require('./ReadStream');
-const WriteStream = require('./WriteStream');
+const ReadStream = require("./3.ReadStream");
+const WriteStream = require("./4.WriteStream");
 
-const rs = new ReadStream('./3.read.txt', {
+const rs = new ReadStream("./3.read.txt", {
   start: 3,
-  autoClose: true
+  autoClose: true,
 });
-const ws = new WriteStream('./3.write.txt', {
-  autoClose: true
+const ws = new WriteStream("./3.write.txt", {
+  autoClose: true,
 });
 rs.pipe(ws);
