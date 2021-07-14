@@ -5,36 +5,38 @@
  * @type {createApplication}
  */
 // const express = require('./expressBase');
-const express = require('express');
-const url = require('url');
+const express = require("express");
+const url = require("url");
 const app = express();
 
 // NOTE 1. 定义路由规则
-app.get('/world', function(req, res) {
+app.get("/world", function (req, res) {
   console.log(url.parse(req.url));
   // console.log(req.method);
-  res.end('world');
+  res.end("world");
 });
-app.post('/hello', function(req, res) {
-  res.end('hello');
+app.post("/hello", function (req, res) {
+  res.end("hello");
 });
-app.get('/test', function(req, res) {
-  res.end('test');
+app.get("/test", function (req, res) {
+  res.end("test");
 });
 
 // NOTE 2. 有些时候只想匹配路径，不想区分具体方法
 // all可以匹配所有的请求方法,
 // 匹配规则：如果存在具体方法请求的处理，则优先使用具体方法的处理，没有再尝试查找all
-app.all('/hello', function (req, res) {
-  res.end('all hello');
+app.all("/hello", function (req, res) {
+  res.end("all hello");
 });
-app.all('/test', function (req, res) {
-  res.end('all test');
+app.all("/test", function (req, res) {
+  res.end("all test");
 });
 // 匹配所有路径 *
 // 一般作为错误处理
-app.all('*', function (req, res) {
-  res.end('all *');
+app.all("*", function (req, res) {
+  res.end("all *");
 });
 
-app.listen(8080);
+app.listen(8080, () => {
+  console.log("express::: start:::8080");
+});

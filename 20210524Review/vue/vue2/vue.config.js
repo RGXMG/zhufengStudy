@@ -23,19 +23,21 @@ function isPro() {
 const prodExternals = {
   vue: "Vue",
   "vue-router": "VueRouter",
+
   vuex: "Vuex",
 };
-
 module.exports = {
   configureWebpack(config) {
     config.optimization.minimizer = [];
     config.devtool = "none";
+    config.optimization.splitChunks.cacheGroups.vendors.maxSize = 200000;
     // isPro() && (config.externals = prodExternals);
   },
   chainWebpack(config) {
     config.plugin("html").tap((arg) => {
-      isPro() && (arg[0].cdn = assetsCDN);
+      // isPro() && (arg[0].cdn = assetsCDN);
       return arg;
     });
   },
 };
+

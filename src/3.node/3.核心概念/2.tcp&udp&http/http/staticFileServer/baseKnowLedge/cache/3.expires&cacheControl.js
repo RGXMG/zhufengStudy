@@ -23,7 +23,7 @@ const mime = require("mime");
 const url = require("url");
 const stat = promisify(fs.stat);
 http
-  .createServer(async function(req, res) {
+  .createServer(async function (req, res) {
     const { pathname } = url.parse(req.url);
     // 拼接路径
     const filepath = path.join(__dirname, pathname);

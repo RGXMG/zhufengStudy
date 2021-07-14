@@ -1,9 +1,9 @@
 /**
  * 工具函数
  **/
-const utils = require('util');
+const utils = require("util");
 // NOTE inspect
-const obj = { a: 1, home: { is: 'is', b: { lp: 123 } } };
+const obj = { a: 1, home: { is: "is", b: { lp: 123 } } };
 // 指定展示层级
 console.log(utils.inspect(obj, { depth: 2 }));
 
