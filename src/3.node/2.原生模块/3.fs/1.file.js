@@ -1,7 +1,7 @@
 /**
  *
  */
-const fs = require('fs');
+const fs = require("fs");
 
 /**
  * readFile 读取文件
@@ -56,7 +56,7 @@ const fs = require('fs');
  * 1. 如果文件太大，甚至超过内存大小，是无法完成的
  * 2. 读取大文件时，性能低下，效率低，
  * NOTE 解决办法，精确的获取想要操作的字节位置，通过open,write等方法
- * fd: file descriptor 文件描述七，当打开一个文件时，node会自动为你分配一个描述器，从0开始
+ * fd: file descriptor 文件描述器，当打开一个文件时，node会自动为你分配一个描述器，从0开始
  * 其中 0：标准输入，在控制台输入(process.stdin.on('data', function(data){ console.log(data) }))
  *      1：标准输出(console.log -> process.stdout.write())
  *      2：错误输出(console.error -> process.stderr.write())
@@ -66,17 +66,17 @@ const fs = require('fs');
 //     console.error(err);
 //     return;
 //   }
-  // 通过write写入
-  // note 当调用write写入文件时，并不会直接写入到物理文件当中，而是先写入到缓存区，在批量写入物理文件
-  // NOTE 参数依次为：描述器，写入的buffer, buffer的偏移量, 写入几个字节, 从哪个位置开始写入,位置填写null时位置自动维护
-  // note callBack中的第二个参数为实际写入的字节数bytesWritten
-  // fs.write(fd, Buffer.from('珠峰'), 3, 3 , 0, function(err, res) {
-  //   if (err) {
-  //     console.error(err);
-  //     return;
-  //   }
-  //   console.log(res);
-  // });
+// 通过write写入
+// note 当调用write写入文件时，并不会直接写入到物理文件当中，而是先写入到缓存区，在批量写入物理文件
+// NOTE 参数依次为：描述器，写入的buffer, buffer的偏移量, 写入几个字节, 从哪个位置开始写入,位置填写null时位置自动维护
+// note callBack中的第二个参数为实际写入的字节数bytesWritten
+// fs.write(fd, Buffer.from('珠峰'), 3, 3 , 0, function(err, res) {
+//   if (err) {
+//     console.error(err);
+//     return;
+//   }
+//   console.log(res);
+// });
 // });
 
 /**
@@ -85,6 +85,6 @@ const fs = require('fs');
  * 参数依次为： 路径，字节长度，回调函数
  * NOTE 该方法会直接更改源文件
  */
-fs.truncate('./1.txt', 7, function(err, res) {
-  console.log('---', res);
+fs.truncate("./1.txt", 7, function (err, res) {
+  console.log("---", res);
 });

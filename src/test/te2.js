@@ -38,4 +38,4 @@ function bubleSortLeft(arr) {
 
 console.log(bubleSort([9, 1, 2, 4, 6, 3]));
 console.log(bubleSort2([9, 1, 2, 4, 6, 3]));
-console.log(bubleSortLeft([9, 1, 2, 4, 6, 3]));
+console.log(bubleSortLeft([3, 2, 4, 5, 1]));
