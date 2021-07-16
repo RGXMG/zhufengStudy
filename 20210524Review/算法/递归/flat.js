@@ -16,7 +16,3 @@ function flat(arr) {
 }
 
 console.log([1, 2, [3, 4]].toString());
-
-function fib(n) {
-  let
-}
